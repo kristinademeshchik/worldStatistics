@@ -5,7 +5,7 @@
 		width = 820,
 		height = 600,
 		years = [],
-		defaultColor = '#ffffff',
+		defaultColor = 'black',
 		svg,
         colors
 
@@ -92,6 +92,8 @@
 
 		var map = svg.append("g");
 
+		console.log(world);
+
 	    map.selectAll('.country')
 	    	.data(world.features)
             .enter().append("path")
@@ -100,6 +102,43 @@
 
 
         fillMap();
+        setAxis();
+	}
+
+	function setAxis() {
+		var chartWidth = 200,
+			chartHeight = 50;
+
+	    var chartX = d3.time.scale()
+            .domain([1993, 2014])
+            .range([0, chartWidth]);
+
+        var chartY = d3.scale.linear()
+            .domain([0, 100])
+            .range([chartHeight, 0]);
+
+        var chartXAxis = d3.svg.axis()
+            .scale(chartX)
+            .orient("bottom")
+            .tickValues(chartX.domain())
+            .tickFormat(d3.format(".0f"));
+
+        var chartYAxis = d3.svg.axis()
+            .scale(chartY)
+            .orient("left")
+            .tickValues(chartY.domain())
+            .tickFormat(function(d) { return d + "%"; });
+
+
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(40,70)")
+            .call(chartXAxis);
+
+        svg.append("g")
+            .attr("class", "y axis")
+            .attr("transform", "translate(40, 20)")
+            .call(chartYAxis);
 	}
 
 	function fillMap() {
