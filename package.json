@@ -35,7 +35,9 @@
     "less-plugin-autoprefix": "1.5.1",
     "less-plugin-glob": "1.1.1",
     "merge-stream": "^1.0.0",
-    "gulp-run-sequence": "^0.3.2"
+    "gulp-run-sequence": "^0.3.2",
+    "ogr2ogr": "^0.5.1",
+    "topojson": "^1.6.26"
   },
   "scripts": {
     "start": "node app.js"
