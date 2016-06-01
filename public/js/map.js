@@ -5,7 +5,7 @@
 		width = 820,
 		height = 600,
 		years = [],
-		defaultColor = 'black',
+		defaultColor = '#342880',
 		svg,
         colors
 
@@ -33,7 +33,9 @@
             '#006837'];
             
         defColor = "white";
-        getColor = d3.scale.quantize().domain([100,0]).range(colors);
+        getColor = d3.scale.quantize()
+        		.domain([100,0])
+        		.range(colors);
 
         loadData();
 	}
@@ -129,7 +131,6 @@
             .tickValues(chartY.domain())
             .tickFormat(function(d) { return d + "%"; });
 
-
         svg.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(40,70)")
@@ -145,8 +146,8 @@
 		var current = 2014;
 
 		svg.selectAll('.country')
-		.style('fill', function(elem) {
-			var color = getColor(elem.properties[current]);
+		.style('fill', function(d) {
+			var color = getColor(d.properties[current]);
 			return color || defaultColor;
 		});
 	}

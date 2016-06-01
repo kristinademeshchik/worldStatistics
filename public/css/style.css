@@ -4,7 +4,7 @@ body {
 }
 
 #map {
-	padding: 20px;
+	padding: 20px 20px 0 20px;
 	display: inline-block;
 	border:solid black 1px;
 }
