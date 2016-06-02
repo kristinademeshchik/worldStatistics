@@ -69,20 +69,15 @@
 	} 
 
 
-    function processData(error, worldMap, country) {
+    function processData(error, worldMap, countryData) {
         var world = topojson.feature(worldMap, worldMap.objects.world),
-            m = 0,
-            countryData = [];
+            m = 0;
 
         countries = world.features;
-        countryData = dictToList(country)
-
-        console.log(countryData);
-        console.log(country);
 
         for (var i in countries) {
             for (var j in countryData) {
-                if (countries[i].code == countryData[j].ISO3166) {
+                if (countries[i].id == countryData[j].code) {
 
                     for(var k in countryData[j]) {
                         if (k != 'code' && k != 'country' && k !== 'series' && k !== 'data') {
@@ -234,7 +229,6 @@
 
         var list = [];
         for(var i in dict) {
-            console.log(dict[i]);
             list.push([i, dict[i]]);
         }
         return list;
