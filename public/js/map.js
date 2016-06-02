@@ -69,14 +69,19 @@
 	} 
 
 
-    function processData(error, worldMap, countryData) {
-        var world = topojson.feature(worldMap, worldMap.objects.world);
+    function processData(error, worldMap, country) {
+        var world = topojson.feature(worldMap, worldMap.objects.world),
+            m = 0,
+            countryData = [];
 
         countries = world.features;
+        countryData = dictToList(country)
+
+        console.log(countryData);
+        console.log(country);
 
         for (var i in countries) {
             for (var j in countryData) {
-                console.log(j);
                 if (countries[i].code == countryData[j].ISO3166) {
 
                     for(var k in countryData[j]) {
@@ -229,6 +234,7 @@
 
         var list = [];
         for(var i in dict) {
+            console.log(dict[i]);
             list.push([i, dict[i]]);
         }
         return list;
