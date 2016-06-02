@@ -43,3 +43,7 @@ g.button:hover{
   stroke: black;
   stroke-width: 1px;
 }
+
+.country {
+	cursor: pointer;
+}

@@ -100,6 +100,13 @@
             .attr("class", "country")
             .attr("d", projection);
 
+        map.selectAll('.country')
+        	.on('mouseover', function(d) {
+            	this.style.opacity = '0.5';
+            })
+            .on('mouseout', function(d) {
+            	this.style.opacity = '1';
+            })
 
         fillMap();
         setAxis();
