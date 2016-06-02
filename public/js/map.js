@@ -45,7 +45,7 @@
             
         defColor = "white";
         getColor = d3.scale.quantize()
-        		.domain([100,0])
+        		.domain([33, 84])
         		.range(colors);
 
         loadData();
@@ -54,7 +54,8 @@
 	function loadData() {
 		   queue()
 	      .defer(d3.json, "/data/topoworld.json")
-	      .defer(d3.csv, "/data/freedom.csv")
+          .defer(d3.csv, "/data/age.csv")
+          // .defer(d3.csv, "/data/freedom.csv")
 	      .await(processData); 
 	}
 
@@ -75,18 +76,20 @@
 
         for (var i in countries) {
             for (var j in countryData) {
-                if (countries[i].id == countryData[j].ISO3166) {
+                console.log(j);
+                if (countries[i].code == countryData[j].ISO3166) {
 
                     for(var k in countryData[j]) {
-                        if (k != 'Country' && k != 'ISO3166') {
+                        if (k != 'code' && k != 'country' && k !== 'series' && k !== 'data') {
                             if (years.indexOf(k) == -1) { 
                                 years.push(k);
                             }
+                            
                             countries[i].properties[k] = Number(countryData[j][k])
                         }
                     }
 
-                    countries[i].country = countryData[j].Country;
+                    countries[i].country = countryData[j].country;
                     break;
                 }
             }
@@ -96,6 +99,7 @@
     }
 
 	function renderMap(world) {
+
 		var projection,
 			miller = d3.geo.miller()
 	          .scale(130)
@@ -130,12 +134,13 @@
 
 	function setAxis() {
         var chartX = d3.time.scale()
-            .domain([1993, 2014])
+            .domain([1990, 2014])
             .range([0, chartWidth]);
 
 
+        var data = dictToList(countries[1].properties);
         var chartY = d3.scale.linear()
-            .domain([0, 100])
+            .domain([30, 100])
             .range([chartHeight, 0]);
 
         var chartXAxis = d3.svg.axis()
@@ -147,8 +152,7 @@
         var chartYAxis = d3.svg.axis()
             .scale(chartY)
             .orient("left")
-            .tickValues(chartY.domain())
-            .tickFormat(function(d) { return d + "%"; });
+            .tickValues(chartY.domain());
 
         chartLine = d3.svg.line()
             .defined(function(d) { return d[1]; })
