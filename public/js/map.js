@@ -5,12 +5,19 @@
 		width = 820,
 		height = 600,
 		years = [],
-		defaultColor = '#342880',
+		defaultColor = '#ccc',
 		svg,
         chartAreaPath,
         chartLinePath,
+        chartArea,
+        chartLine,
+        chart,
         countries,
         colors,
+        text,
+        chartWidth = 200,
+        dur = 500,
+        chartHeight = 50,
         margin = {top: 30, right: 40, bottom: 40, left: 40};
 
 	function init() {
@@ -112,6 +119,9 @@
             .on('mouseout', function(d) {
             	this.style.opacity = '1';
             })
+            .on('click', function(d) {
+                setChartData(d);
+            })
 
         fillMap();
         setAxis();
@@ -119,12 +129,6 @@
 	}
 
 	function setAxis() {
-		var chartWidth = 200,
-            dur = 500,
-			chartHeight = 50;
-
-        var dataset =  countries[1].properties;
-
         var chartX = d3.time.scale()
             .domain([1993, 2014])
             .range([0, chartWidth]);
@@ -146,26 +150,18 @@
             .tickValues(chartY.domain())
             .tickFormat(function(d) { return d + "%"; });
 
-        var xScale = d3.scale.linear()
-            .domain([0, d3.max(years, function(d) { return d; })])
-            .range([0, chartWidth]);
-
-         var yScale = d3.scale.linear()
-            .domain([0, d3.max(dataset, function(d){ return d; })])
-            .range([0, chartHeight]);
-
-        var chartLine = d3.svg.line()
+        chartLine = d3.svg.line()
             .defined(function(d) { return d[1]; })
             .x(function(d) { return chartX(d[0]); })
             .y(function(d) { return chartY(d[1]); });
 
-        var chartArea = d3.svg.area()
+        chartArea = d3.svg.area()
             .defined(chartLine.defined())
             .x(chartLine.x())
             .y0(chartHeight)
             .y1(chartLine.y());
 
-        var chart = svg.append('g');
+        chart = svg.append('g');
 
         chart.attr('x', margin.left)
             .attr('y', margin.top);
@@ -192,13 +188,23 @@
         chartAreaPath = chart.append("path").attr("class", "area");
         chartLinePath = chart.append("path").attr("class", "line");
 
-
-        var data = dictToList(dataset);
-
-        chart.append("text")
-            .text(countries[1].country)
+        text = chart.append("text")
             .attr('class', 'text')
             .attr("transform", "translate(" + margin.left + ",19)");
+
+	}
+
+    function setChartData(country) {
+        var dataset =  country.properties,
+             data = dictToList(dataset);
+
+        var xScale = d3.scale.linear()
+            .domain([0, d3.max(years, function(d) { return d; })])
+            .range([0, chartWidth]);
+
+        var yScale = d3.scale.linear()
+            .domain([0, d3.max(dataset, function(d){ return d; })])
+            .range([0, chartHeight]);
 
         chartAreaPath
             .datum(data.filter(function(d) {if (d[1]) return d; }))
@@ -212,7 +218,8 @@
             .attr("d", chartLine)
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-	}
+        text.text(country.country);
+    }
 
     function dictToList(dict) {
 
