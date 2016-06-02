@@ -7,6 +7,9 @@
 		years = [],
 		defaultColor = '#342880',
 		svg,
+        chartAreaPath,
+        chartLinePath,
+        countries,
         colors
 
 	function init() {
@@ -58,8 +61,9 @@
 
 
     function processData(error, worldMap, countryData) {
-        var world = topojson.feature(worldMap, worldMap.objects.world),
-            countries = world.features;
+        var world = topojson.feature(worldMap, worldMap.objects.world);
+
+        countries = world.features;
 
         for (var i in countries) {
             for (var j in countryData) {
@@ -115,9 +119,12 @@
 
 	function setAxis() {
 		var chartWidth = 200,
+            dur = 500,
 			chartHeight = 50;
 
-	    var chartX = d3.time.scale()
+        var dataset =  countries[0].properties;
+
+        var chartX = d3.time.scale()
             .domain([1993, 2014])
             .range([0, chartWidth]);
 
@@ -138,41 +145,72 @@
             .tickValues(chartY.domain())
             .tickFormat(function(d) { return d + "%"; });
 
-        svg.append("g")
+        var xScale = d3.scale.linear()
+            .domain([0, d3.max(years, function(d) { return d; })])
+            .range([0, chartWidth]);
+
+         var yScale = d3.scale.linear()
+            .domain([0, d3.max(dataset, function(d){ return d; })])
+            .range([0, chartHeight]);
+
+        var chartLine = d3.svg.line()
+            .defined(function(d) { return d[1]; })
+            .x(function(d) { return chartX(d[0]); })
+            .y(function(d) { return chartY(d[1]); });
+
+        var chartArea = d3.svg.area()
+            .defined(chartLine.defined())
+            .x(chartLine.x())
+            .y0(chartHeight)
+            .y1(chartLine.y());
+
+        var chart = svg.append('g');
+
+        chart.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(40,70)")
             .call(chartXAxis);
 
-        svg.append("g")
+        chart.append("g")
             .attr("class", "y axis")
             .attr("transform", "translate(40, 20)")
             .call(chartYAxis);
 
+        chartAreaPath = chart.append("path").attr("class", "area");
+        chartLinePath = chart.append("path").attr("class", "line");
 
-        var dataset = [
-                [5, 20], [480, 90], [250, 50], [100, 33], [330, 95],
-                [410, 12], [475, 44], [25, 67], [85, 21], [220, 88]
-              ];
 
-        var xScale = d3.scale.linear()
-        	.domain([0, d3.max(dataset, function(d) { return d[0]; })])
-        	.range([0, chartWidth]);
+        var data = dictToList(dataset);
 
-         var yScale = d3.scale.linear()
-        	.domain([0, d3.max(dataset, function(d){ return d[1]; })])
-        	.range([0, chartHeight]);
+        chartAreaPath
+            .datum(data)
+                .transition().duration(dur)
+            .attr("d", chartArea);
+        chartLinePath
+            .datum(data)
+                .transition().duration(dur)
+            .attr("d", chartLine);
 
-       	var circles = svg.append('g');
 
-        circles.selectAll("circle")
-		   .data(dataset)
-		   .enter()
-		   .append("circle")
-		   .attr('cx', function(d) {return xScale(d[0])})
-		   .attr('cy', function(d) {return yScale(d[1])})
-		   .attr('r', function(d) {return Math.sqrt(chartHeight - yScale(d[1]))})
-		   .attr("transform", "translate(50, 20)");
+        svg.selectAll(".dot")
+            .data(data.filter(function(d) {if (d[1]) return d; }))
+            .enter().append("circle")
+            .attr("class", "dot")
+            .attr("cx", chartLine.x())
+            .attr("cy", chartLine.y())
+            .attr("r", 2);
+
+
 	}
+
+    function dictToList(dict) {
+
+        var list = [];
+        for(var i in dict) {
+            list.push([i, dict[i]]);
+        }
+        return list;
+    }
 
 	function drawLegend() {
 		var legend = svg.append('g'),

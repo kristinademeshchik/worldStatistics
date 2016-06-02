@@ -36,7 +36,7 @@ g.button:hover{
     shape-rendering: crispEdges;
 }
 .area {
-    fill: steelblue;
+    fill: #286FB7;
 }
 .line {
   fill: none;
