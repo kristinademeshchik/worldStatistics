@@ -70,8 +70,7 @@
 
 
     function processData(error, worldMap, countryData) {
-        var world = topojson.feature(worldMap, worldMap.objects.world),
-            m = 0;
+        var world = topojson.feature(worldMap, worldMap.objects.world);
 
         countries = world.features;
 
@@ -80,7 +79,7 @@
                 if (countries[i].id == countryData[j].ISO3166) {
 
                     for(var k in countryData[j]) {
-                        if (k != 'code' && k != 'country' && k !== 'series' && k !== 'data') {
+                        if (k != 'Country' && k != 'ISO3166' && k !== 'series' && k !== 'data') {
                             if (years.indexOf(k) == -1) { 
                                 years.push(k);
                             }
@@ -89,7 +88,7 @@
                         }
                     }
 
-                    countries[i].country = countryData[j].country;
+                    countries[i].country = countryData[j].Country;
                     break;
                 }
             }
@@ -99,7 +98,6 @@
     }
 
 	function renderMap(world) {
-
 		var projection,
 			miller = d3.geo.miller()
 	          .scale(130)
