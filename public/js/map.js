@@ -77,7 +77,7 @@
 
         for (var i in countries) {
             for (var j in countryData) {
-                if (countries[i].id == countryData[j].code) {
+                if (countries[i].id == countryData[j].ISO3166) {
 
                     for(var k in countryData[j]) {
                         if (k != 'code' && k != 'country' && k !== 'series' && k !== 'data') {
