@@ -10,7 +10,8 @@
         chartAreaPath,
         chartLinePath,
         countries,
-        colors
+        colors,
+        margin = {top: 30, right: 40, bottom: 40, left: 40};
 
 	function init() {
 		setMap();
@@ -122,7 +123,7 @@
             dur = 500,
 			chartHeight = 50;
 
-        var dataset =  countries[0].properties;
+        var dataset =  countries[1].properties;
 
         var chartX = d3.time.scale()
             .domain([1993, 2014])
@@ -166,14 +167,26 @@
 
         var chart = svg.append('g');
 
+        chart.attr('x', margin.left)
+            .attr('y', margin.top);
+
+        chart.append("rect")
+            .attr('width', chartWidth + 65)
+            .attr('height', chartHeight + 55)
+            .attr('x', 0)
+            .attr('fill', '#fff')
+            .attr('stroke', 'black');
+
+        var top = chartHeight + margin.top;
+
         chart.append("g")
             .attr("class", "x axis")
-            .attr("transform", "translate(40,70)")
+            .attr("transform", "translate(" + margin.left + "," + top + ")")
             .call(chartXAxis);
 
         chart.append("g")
             .attr("class", "y axis")
-            .attr("transform", "translate(40, 20)")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
             .call(chartYAxis);
 
         chartAreaPath = chart.append("path").attr("class", "area");
@@ -182,24 +195,22 @@
 
         var data = dictToList(dataset);
 
+        chart.append("text")
+            .text(countries[1].country)
+            .attr('class', 'text')
+            .attr("transform", "translate(" + margin.left + ",19)");
+
         chartAreaPath
-            .datum(data)
+            .datum(data.filter(function(d) {if (d[1]) return d; }))
                 .transition().duration(dur)
-            .attr("d", chartArea);
+            .attr("d", chartArea)
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
         chartLinePath
-            .datum(data)
+            .datum(data.filter(function(d) {if (d[1]) return d; }))
                 .transition().duration(dur)
-            .attr("d", chartLine);
-
-
-        svg.selectAll(".dot")
-            .data(data.filter(function(d) {if (d[1]) return d; }))
-            .enter().append("circle")
-            .attr("class", "dot")
-            .attr("cx", chartLine.x())
-            .attr("cy", chartLine.y())
-            .attr("r", 2);
-
+            .attr("d", chartLine)
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 	}
 

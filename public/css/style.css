@@ -47,3 +47,8 @@ g.button:hover{
 .country {
 	cursor: pointer;
 }
+
+.dot {
+    fill: #fff;
+    stroke: #000;
+}
