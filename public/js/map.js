@@ -94,8 +94,6 @@
 
 		var map = svg.append("g");
 
-		console.log(world);
-
 	    map.selectAll('.country')
 	    	.data(world.features)
             .enter().append("path")
@@ -105,6 +103,7 @@
 
         fillMap();
         setAxis();
+        drawLegend();
 	}
 
 	function setAxis() {
@@ -114,6 +113,7 @@
 	    var chartX = d3.time.scale()
             .domain([1993, 2014])
             .range([0, chartWidth]);
+
 
         var chartY = d3.scale.linear()
             .domain([0, 100])
@@ -140,6 +140,28 @@
             .attr("class", "y axis")
             .attr("transform", "translate(40, 20)")
             .call(chartYAxis);
+	}
+
+	function drawLegend() {
+		var legend = svg.append('g'),
+			legendWindth = 200,
+			itemHeight = 15,
+			itemWidth = 20,
+			i = 0;
+
+			legend.attr('transform', 'translate(10, 570)');
+
+		while (i < colors.length) {
+			legend.append('rect')
+					.attr('width', itemWidth)
+					.attr('height', itemHeight)
+					.attr('x', i * itemWidth)
+					.attr('fill', function(d) {
+						return colors[i];
+					})
+
+			i++;
+		}
 	}
 
 	function fillMap() {
