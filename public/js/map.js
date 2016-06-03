@@ -16,6 +16,8 @@
         colors,
         hover,
         text,
+        select,
+        selectedCountries = 0,
         dur = 500,
         chartWidth = 400,
         chartHeight = 300,
@@ -105,6 +107,9 @@
 
 		var map = svg.append("g");
 
+        select = svg.append('g')
+            .attr('class', 'selected');
+
 	    map.selectAll('.country')
 	    	.data(world.features)
             .enter().append("path")
@@ -119,7 +124,7 @@
             	this.style.opacity = '1';
             })
             .on('click', function(d) {
-                setChartData(d);
+                setSelected(d, this);
             });
 
         fillMap();
@@ -127,6 +132,29 @@
         renderHoverData();
         drawLegend();
 	}
+
+    function setSelected(d, context) {
+
+        if (select.selectAll('.' + d.id)[0].length === 0) {
+            var xy = d3.mouse(context);
+
+            select.append('circle')
+                .attr("cx", xy[0])
+                .attr("cy", xy[1])
+                .attr("r", 12)
+                .attr('class', 'selected-countries ' + d.id)
+                .attr('fill', 'orange');
+
+            selectedCountries++;
+            setChartData(d);
+        }
+
+        else {
+            select.select('.' + d.id).remove();
+            selectedCountries--;
+        }
+
+    }
 
 	function setChart() {
         var top,
@@ -184,9 +212,6 @@
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
             .call(chartYAxis);
 
-        chartAreaPath = chart.append("path").attr("class", "area");
-        chartLinePath = chart.append("path").attr("class", "line");
-
         text = chart.append("text")
             .attr('class', 'text')
             .attr("transform", "translate(" + margin.left + ",19)");
@@ -220,6 +245,9 @@
             .domain(dataDomain)
             .range([0, chartHeight]);
 
+        chartAreaPath = chart.append("path").attr("class", "area");
+        chartLinePath = chart.append("path").attr("class", "line");
+
         chartAreaPath
             .datum(data.filter(function(d) {if (d[1]) return d; }))
                 //.transition().duration(dur)
@@ -232,7 +260,7 @@
             .attr("d", chartLine)
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        chart.selectAll(".dots").remove();
+        //chart.selectAll(".dots").remove();
 
         var dots = chart.append("g")
             .attr('class', 'dots')

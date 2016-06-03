@@ -33,11 +33,13 @@ g.button:hover {
 }
 .area {
   fill: #286fb7;
+  opacity: 0.3;
 }
 .line {
   fill: none;
   stroke: #000;
   stroke-width: 1px;
+  opacity: 0.3;
 }
 .country {
   cursor: pointer;
@@ -49,4 +51,7 @@ g.button:hover {
 }
 .hover-rect {
   fill: #74b8f1;
+}
+.selected-countries {
+  opacity: 0.8;
 }
