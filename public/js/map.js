@@ -14,10 +14,11 @@
         chart,
         countries,
         colors,
+        hover,
         text,
-        chartWidth = 200,
         dur = 500,
-        chartHeight = 50,
+        chartWidth = 400,
+        chartHeight = 300,
         timeDomain = [],
         dataDomain = [],
         margin = {top: 30, right: 40, bottom: 40, left: 40};
@@ -46,8 +47,8 @@
             
         defColor = "white";
         getColor = d3.scale.quantize()
-        		.domain([33, 84])
-        		.range(colors);
+            .domain([33, 84])
+            .range(colors);
 
         loadData();
 	}
@@ -59,16 +60,6 @@
           // .defer(d3.csv, "/data/freedom.csv")
 	      .await(processData); 
 	}
-
-	function processData(error, worldMap, countryData) {
-		if (error) {
-			console.log('error');
-		}
-		else  {
-			processData(worldMap, countryData);
-		}
-	} 
-
 
     function processData(error, worldMap, countryData) {
         var world = topojson.feature(worldMap, worldMap.objects.world),
@@ -129,18 +120,19 @@
             })
             .on('click', function(d) {
                 setChartData(d);
-            })
+            });
 
         fillMap();
-        setAxis();
+        setChart();
+        renderHoverData();
         drawLegend();
 	}
 
-	function setAxis() {
-        var chartX = d3.time.scale()
+	function setChart() {
+        var top,
+            chartX = d3.time.scale()
             .domain(timeDomain)
             .range([0, chartWidth]);
-
 
         var data = dictToList(countries[1].properties);
         var chartY = d3.scale.linear()
@@ -171,16 +163,16 @@
 
         chart = svg.append('g');
 
-        chart.attr("transform", "translate(0, 10)")
+        chart.attr("transform", "translate(0, 10)");
 
         chart.append("rect")
-            .attr('width', chartWidth + 200)
-            .attr('height', chartHeight + 200)
+            .attr('width', chartWidth + 100)
+            .attr('height', chartHeight + 100)
             .attr('x', 0)
             .attr('fill', '#fff')
             .attr('stroke', 'black');
 
-        var top = chartHeight + margin.top;
+        top = chartHeight + margin.top;
 
         chart.append("g")
             .attr("class", "x axis")
@@ -201,6 +193,21 @@
 
 	}
 
+    function renderHoverData() {
+        hover = svg.append('g')
+            .attr("transform", "translate(" + (-1000) + "," + (-1000) + ")");
+
+        hover.append('text')
+            .attr('class', 'year')
+            .text('2000');
+
+        hover.append('text')
+            .attr('class', 'data')
+            .text('data')
+            .attr("transform", "translate(0, 20)");
+    }
+
+
     function setChartData(country) {
         var dataset =  country.properties,
              data = dictToList(dataset);
@@ -215,15 +222,51 @@
 
         chartAreaPath
             .datum(data.filter(function(d) {if (d[1]) return d; }))
-                .transition().duration(dur)
+                //.transition().duration(dur)
             .attr("d", chartArea)
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         chartLinePath
             .datum(data.filter(function(d) {if (d[1]) return d; }))
-                .transition().duration(dur)
+                //.transition().duration(dur)
             .attr("d", chartLine)
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        chart.selectAll(".dots").remove();
+
+        var dots = chart.append("g")
+            .attr('class', 'dots')
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+        dots.selectAll(".dot")
+            .data(data.filter(function(d) {if (d[1]) return d; }))
+            .enter().append("circle")
+            .attr("class", "dot")
+            .attr("cx", chartLine.x())
+            .attr("cy", chartLine.y())
+            .attr("r", 3)
+            .on('mouseover', function(d) {
+                var xy = d3.mouse(this),
+                    x = (xy[0]),
+                    y = (xy[1] - chartHeight);
+
+                if (width - xy[0] < chartWidth) {
+                    x = xy[0] - chartWidth;
+                }
+                if (xy[1] < chartHeight) {
+                    y = xy[1];
+                }
+
+                hover.attr("transform", "translate(" + x + "," + y + ")");
+
+                hover.select('.year').text('Year: ' + d[0]);
+                hover.select('.data').text('Average years: ' + d[1].toFixed(2));
+
+            })
+            .on('mouseout', function() {
+                hover.attr("transform", "translate(" + (-1000) + "," + (-1000) + ")");
+            });
 
         text.text(country.country);
     }
@@ -239,7 +282,6 @@
 
 	function drawLegend() {
 		var legend = svg.append('g'),
-			legendWindth = 200,
 			itemHeight = 15,
 			itemWidth = 20,
 			i = 0;
@@ -253,7 +295,7 @@
 					.attr('x', i * itemWidth)
 					.attr('fill', function(d) {
 						return colors[i];
-					})
+					});
 
 			i++;
 		}
