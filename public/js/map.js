@@ -2,7 +2,7 @@
 	console.log('app started');
 
 	var map = d3.select('#map'),
-		width = 820,
+		width = 1020,
 		height = 600,
 		years = [],
 		defaultColor = '#ccc',
@@ -18,6 +18,8 @@
         chartWidth = 200,
         dur = 500,
         chartHeight = 50,
+        timeDomain = [],
+        dataDomain = [],
         margin = {top: 30, right: 40, bottom: 40, left: 40};
 
 	function init() {
@@ -25,7 +27,6 @@
 	}	
 
 	function setMap() {
-		width = 818, height = 600;
 
         svg = d3.select('#map').append('svg')
             .attr('width', width)
@@ -70,7 +71,8 @@
 
 
     function processData(error, worldMap, countryData) {
-        var world = topojson.feature(worldMap, worldMap.objects.world);
+        var world = topojson.feature(worldMap, worldMap.objects.world),
+            dataValues = [];
 
         countries = world.features;
 
@@ -84,7 +86,8 @@
                                 years.push(k);
                             }
                             
-                            countries[i].properties[k] = Number(countryData[j][k])
+                            countries[i].properties[k] = Number(countryData[j][k]);
+                            dataValues.push(Number(countryData[j][k]));
                         }
                     }
 
@@ -93,6 +96,9 @@
                 }
             }
         }
+
+        timeDomain = [d3.min(years), d3.max(years)];
+        dataDomain = [d3.min(dataValues), d3.max(dataValues)];
 
         renderMap(world);
     }
@@ -132,25 +138,25 @@
 
 	function setAxis() {
         var chartX = d3.time.scale()
-            .domain([1990, 2014])
+            .domain(timeDomain)
             .range([0, chartWidth]);
 
 
         var data = dictToList(countries[1].properties);
         var chartY = d3.scale.linear()
-            .domain([30, 100])
+            .domain(dataDomain)
             .range([chartHeight, 0]);
-
+        
         var chartXAxis = d3.svg.axis()
             .scale(chartX)
             .orient("bottom")
-            .tickValues(chartX.domain())
+            .ticks(years.length /2)
             .tickFormat(d3.format(".0f"));
 
         var chartYAxis = d3.svg.axis()
             .scale(chartY)
             .orient("left")
-            .tickValues(chartY.domain());
+            .tickValues(chartY.domain());   
 
         chartLine = d3.svg.line()
             .defined(function(d) { return d[1]; })
@@ -165,12 +171,11 @@
 
         chart = svg.append('g');
 
-        chart.attr('x', margin.left)
-            .attr('y', margin.top);
+        chart.attr("transform", "translate(0, 10)")
 
         chart.append("rect")
-            .attr('width', chartWidth + 65)
-            .attr('height', chartHeight + 55)
+            .attr('width', chartWidth + 200)
+            .attr('height', chartHeight + 200)
             .attr('x', 0)
             .attr('fill', '#fff')
             .attr('stroke', 'black');
@@ -201,11 +206,11 @@
              data = dictToList(dataset);
 
         var xScale = d3.scale.linear()
-            .domain([0, d3.max(years, function(d) { return d; })])
+            .domain(timeDomain)
             .range([0, chartWidth]);
 
         var yScale = d3.scale.linear()
-            .domain([0, d3.max(dataset, function(d){ return d; })])
+            .domain(dataDomain)
             .range([0, chartHeight]);
 
         chartAreaPath
