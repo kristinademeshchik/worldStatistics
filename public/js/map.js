@@ -281,8 +281,8 @@
                 }
 
                 hover.attr('transform', 'translate(' + x + ',' + y + ')');
-
-                hover.select('.country-name').text('Country: ' + d[0]);
+                
+                hover.select('.country-name').text('Country: ' + country.country);
                 hover.select('.year').text('Year: ' + d[0]);
                 hover.select('.data').text('Average years: ' + d[1].toFixed(2));
 
