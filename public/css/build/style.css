@@ -43,6 +43,10 @@ g.button:hover {
 }
 .country {
   cursor: pointer;
+  opacity: 0.6;
+}
+.country_selected {
+  opacity: 1;
 }
 .dot {
   fill: #fff;

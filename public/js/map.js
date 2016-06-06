@@ -2,7 +2,7 @@
 	console.log('app started');
 
 	var map = d3.select('#map'),
-		width = 1020,
+		width = 1220,
 		height = 600,
 		years = [],
 		defaultColor = '#ccc',
@@ -19,8 +19,8 @@
         select,
         selectedCountries = 0,
         dur = 500,
-        chartWidth = 400,
-        chartHeight = 300,
+        chartWidth = 300,
+        chartHeight = 200,
         timeDomain = [],
         dataDomain = [],
         margin = {top: 30, right: 40, bottom: 40, left: 40};
@@ -47,7 +47,7 @@
             '#1a9850',
             '#006837'];
             
-        defColor = "white";
+        defColor = 'white';
         getColor = d3.scale.quantize()
             .domain([33, 84])
             .range(colors);
@@ -57,9 +57,9 @@
 
 	function loadData() {
 		   queue()
-	      .defer(d3.json, "/data/topoworld.json")
-          .defer(d3.csv, "/data/age.csv")
-          // .defer(d3.csv, "/data/freedom.csv")
+	      .defer(d3.json, '/data/topoworld.json')
+          .defer(d3.csv, '/data/age.csv')
+          // .defer(d3.csv, '/data/freedom.csv')
 	      .await(processData); 
 	}
 
@@ -105,23 +105,26 @@
 
         projection = d3.geo.path().projection(miller);
 
-		var map = svg.append("g");
+		var map = svg.append('g');
+
+        map
+            .attr('transform', 'translate(-180, 10)');
 
         select = svg.append('g')
             .attr('class', 'selected');
 
 	    map.selectAll('.country')
 	    	.data(world.features)
-            .enter().append("path")
-            .attr("class", "country")
-            .attr("d", projection);
+            .enter().append('path')
+            .attr('class', 'country')
+            .attr('d', projection);
 
         map.selectAll('.country')
         	.on('mouseover', function(d) {
-            	this.style.opacity = '0.5';
+            	this.style.opacity = '1';
             })
             .on('mouseout', function(d) {
-            	this.style.opacity = '1';
+            	this.style.opacity = '';
             })
             .on('click', function(d) {
                 setSelected(d, this);
@@ -135,23 +138,14 @@
 
     function setSelected(d, context) {
 
-        if (select.selectAll('.' + d.id)[0].length === 0) {
-            var xy = d3.mouse(context);
-
-            select.append('circle')
-                .attr("cx", xy[0])
-                .attr("cy", xy[1])
-                .attr("r", 12)
-                .attr('class', 'selected-countries ' + d.id)
-                .attr('fill', 'orange');
-
-            selectedCountries++;
+        if (!context.classList.contains('country_selected')) {
             setChartData(d);
+            context.classList.add('country_selected');
         }
 
         else {
-            select.select('.' + d.id).remove();
-            selectedCountries--;
+            context.classList.remove('country_selected');
+            d3.selectAll('.' + d.id).remove();
         }
 
     }
@@ -169,13 +163,13 @@
         
         var chartXAxis = d3.svg.axis()
             .scale(chartX)
-            .orient("bottom")
+            .orient('bottom')
             .ticks(years.length /2)
-            .tickFormat(d3.format(".0f"));
+            .tickFormat(d3.format('.0f'));
 
         var chartYAxis = d3.svg.axis()
             .scale(chartY)
-            .orient("left")
+            .orient('left')
             .tickValues(chartY.domain());   
 
         chartLine = d3.svg.line()
@@ -191,36 +185,36 @@
 
         chart = svg.append('g');
 
-        chart.attr("transform", "translate(0, 10)");
+        chart.attr('transform', 'translate(820, 10)');
 
-        chart.append("rect")
+        chart.append('rect')
             .attr('width', chartWidth + 100)
-            .attr('height', chartHeight + 100)
+            .attr('height', chartHeight + 70)
             .attr('x', 0)
             .attr('fill', '#fff')
             .attr('stroke', 'black');
 
         top = chartHeight + margin.top;
 
-        chart.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(" + margin.left + "," + top + ")")
+        chart.append('g')
+            .attr('class', 'x axis')
+            .attr('transform', 'translate(' + margin.left + ',' + top + ')')
             .call(chartXAxis);
 
-        chart.append("g")
-            .attr("class", "y axis")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        chart.append('g')
+            .attr('class', 'y axis')
+            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
             .call(chartYAxis);
 
-        text = chart.append("text")
+        text = chart.append('text')
             .attr('class', 'text')
-            .attr("transform", "translate(" + margin.left + ",19)");
+            .attr('transform', 'translate(' + margin.left + ', 22)');
 
 	}
 
     function renderHoverData() {
         hover = svg.append('g')
-            .attr("transform", "translate(" + (-1000) + "," + (-1000) + ")");
+            .attr('transform', 'translate(' + (-1000) + ',' + (-1000) + ')');
 
         hover.append('text')
             .attr('class', 'year')
@@ -229,7 +223,7 @@
         hover.append('text')
             .attr('class', 'data')
             .text('data')
-            .attr("transform", "translate(0, 20)");
+            .attr('transform', 'translate(0, 20)');
     }
 
 
@@ -245,35 +239,39 @@
             .domain(dataDomain)
             .range([0, chartHeight]);
 
-        chartAreaPath = chart.append("path").attr("class", "area");
-        chartLinePath = chart.append("path").attr("class", "line");
+
+        var chartItem = chart.append('g')
+            .attr('class', country.id);
+
+        chartAreaPath = chartItem.append('path').attr('class', 'area');
+        chartLinePath = chartItem.append('path').attr('class', 'line');
 
         chartAreaPath
             .datum(data.filter(function(d) {if (d[1]) return d; }))
                 //.transition().duration(dur)
-            .attr("d", chartArea)
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr('d', chartArea)
+            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
         chartLinePath
             .datum(data.filter(function(d) {if (d[1]) return d; }))
                 //.transition().duration(dur)
-            .attr("d", chartLine)
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr('d', chartLine)
+            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-        //chart.selectAll(".dots").remove();
+        //chart.selectAll('.dots').remove();
 
-        var dots = chart.append("g")
+        var dots = chartItem.append('g')
             .attr('class', 'dots')
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
 
-        dots.selectAll(".dot")
+        dots.selectAll('.dot')
             .data(data.filter(function(d) {if (d[1]) return d; }))
-            .enter().append("circle")
-            .attr("class", "dot")
-            .attr("cx", chartLine.x())
-            .attr("cy", chartLine.y())
-            .attr("r", 3)
+            .enter().append('circle')
+            .attr('class', 'dot')
+            .attr('cx', chartLine.x())
+            .attr('cy', chartLine.y())
+            .attr('r', 3)
             .on('mouseover', function(d) {
                 var xy = d3.mouse(this),
                     x = (xy[0]),
@@ -286,14 +284,14 @@
                     y = xy[1];
                 }
 
-                hover.attr("transform", "translate(" + x + "," + y + ")");
+                hover.attr('transform', 'translate(' + x + ',' + y + ')');
 
                 hover.select('.year').text('Year: ' + d[0]);
                 hover.select('.data').text('Average years: ' + d[1].toFixed(2));
 
             })
             .on('mouseout', function() {
-                hover.attr("transform", "translate(" + (-1000) + "," + (-1000) + ")");
+                hover.attr('transform', 'translate(' + (-1000) + ',' + (-1000) + ')');
             });
 
         text.text(country.country);
