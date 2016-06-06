@@ -22,7 +22,8 @@ g.button:hover {
   font-size: 14px;
 }
 .year,
-.data {
+.data,
+.country-name {
   font-size: 12px;
 }
 .axis path,

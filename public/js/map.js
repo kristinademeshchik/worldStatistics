@@ -17,8 +17,6 @@
         hover,
         text,
         select,
-        selectedCountries = 0,
-        dur = 500,
         chartWidth = 300,
         chartHeight = 200,
         timeDomain = [],
@@ -59,7 +57,6 @@
 		   queue()
 	      .defer(d3.json, '/data/topoworld.json')
           .defer(d3.csv, '/data/age.csv')
-          // .defer(d3.csv, '/data/freedom.csv')
 	      .await(processData); 
 	}
 
@@ -206,10 +203,6 @@
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
             .call(chartYAxis);
 
-        text = chart.append('text')
-            .attr('class', 'text')
-            .attr('transform', 'translate(' + margin.left + ', 22)');
-
 	}
 
     function renderHoverData() {
@@ -217,13 +210,18 @@
             .attr('transform', 'translate(' + (-1000) + ',' + (-1000) + ')');
 
         hover.append('text')
+            .attr('class', 'country-name')
+            .text('Belarus');
+
+        hover.append('text')
             .attr('class', 'year')
-            .text('2000');
+            .text('2000')
+            .attr('transform', 'translate(0, 20)');
 
         hover.append('text')
             .attr('class', 'data')
             .text('data')
-            .attr('transform', 'translate(0, 20)');
+            .attr('transform', 'translate(0, 40)');
     }
 
 
@@ -248,22 +246,18 @@
 
         chartAreaPath
             .datum(data.filter(function(d) {if (d[1]) return d; }))
-                //.transition().duration(dur)
             .attr('d', chartArea)
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
         chartLinePath
             .datum(data.filter(function(d) {if (d[1]) return d; }))
-                //.transition().duration(dur)
             .attr('d', chartLine)
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-        //chart.selectAll('.dots').remove();
 
         var dots = chartItem.append('g')
             .attr('class', 'dots')
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
 
         dots.selectAll('.dot')
             .data(data.filter(function(d) {if (d[1]) return d; }))
@@ -274,18 +268,21 @@
             .attr('r', 3)
             .on('mouseover', function(d) {
                 var xy = d3.mouse(this),
-                    x = (xy[0]),
-                    y = (xy[1] - chartHeight);
+                    deltaX = 780,
+                    deltaY = 25,
+                    x = (xy[0]) + deltaX,
+                    y = (xy[1] - chartHeight - deltaY);
 
                 if (width - xy[0] < chartWidth) {
-                    x = xy[0] - chartWidth;
+                    x = xy[0] - chartWidth + deltaX;
                 }
                 if (xy[1] < chartHeight) {
-                    y = xy[1];
+                    y = xy[1] - deltaY;
                 }
 
                 hover.attr('transform', 'translate(' + x + ',' + y + ')');
 
+                hover.select('.country-name').text('Country: ' + d[0]);
                 hover.select('.year').text('Year: ' + d[0]);
                 hover.select('.data').text('Average years: ' + d[1].toFixed(2));
 
@@ -293,8 +290,6 @@
             .on('mouseout', function() {
                 hover.attr('transform', 'translate(' + (-1000) + ',' + (-1000) + ')');
             });
-
-        text.text(country.country);
     }
 
     function dictToList(dict) {
