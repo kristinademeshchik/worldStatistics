@@ -32,9 +32,19 @@ g.button:hover {
   stroke: #000;
   shape-rendering: crispEdges;
 }
+.country-area {
+  cursor: pointer;
+}
+.country-area .area {
+  transition: opacity 300ms ease;
+  opacity: 0.3;
+}
+.country-area:hover .area {
+  opacity: 1;
+  transition: opacity 300ms ease;
+}
 .area {
   fill: #286fb7;
-  opacity: 0.3;
 }
 .line {
   fill: none;
@@ -45,9 +55,11 @@ g.button:hover {
 .country {
   cursor: pointer;
   opacity: 0.6;
+  transition: opacity 300ms ease;
 }
 .country_selected {
   opacity: 1;
+  transition: opacity 300ms ease;
 }
 .dot {
   fill: #fff;

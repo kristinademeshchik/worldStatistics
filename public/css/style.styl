@@ -32,9 +32,21 @@ g.button:hover
   stroke: #000
   shape-rendering: crispEdges
 
+.country-area
+  cursor pointer
+
+  .area
+    transition: opacity 300ms ease
+    opacity 0.3
+
+  &:hover
+
+    .area
+      opacity: 1
+      transition: opacity 300ms ease
+
 .area
   fill: #286FB7
-  opacity 0.3
 
 .line
   fill: none
@@ -45,9 +57,11 @@ g.button:hover
 .country
   cursor: pointer
   opacity: 0.6
+  transition: opacity 300ms ease
 
   &_selected
     opacity: 1
+    transition: opacity 300ms ease
 
 .dot
   fill: #fff
