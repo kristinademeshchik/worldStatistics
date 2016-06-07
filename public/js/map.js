@@ -131,8 +131,8 @@
 			});
 
 		fillMap();
-		//renderChart();
-        renderRectChart();
+		renderChart();
+        //renderRectChart();
 		renderHoverData();
 		drawLegend();
 	}
@@ -140,8 +140,8 @@
 	function setSelected(d, context) {
 
 		if (!context.classList.contains('country_selected')) {
-			//setChartData(d);
-			setRectChartData(d);
+			setChartData(d);
+			//setRectChartData(d);
 			context.classList.add('country_selected');
 		}
 
@@ -401,7 +401,7 @@
             .duration(1500)
             .attr({
                 y: function (d, i) {
-                    if (d[1]) return yScale(data[1]);
+                    if (d[1]) return yScale(d[1]);
                 },
                 height: function (d, i) {
                     if (d[1]) return chartHeight - yScale(d[1]);
