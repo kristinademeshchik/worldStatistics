@@ -30,8 +30,10 @@
 	function setMap() {
 
 		svg = d3.select('#map').append('svg')
-			.attr('width', width)
-			.attr('height', height);
+			.attr({
+                width: width,
+                height: height
+            });
 
 		colors = [
 			'#a50026',
@@ -104,8 +106,7 @@
 
 		var map = svg.append('g');
 
-		map
-			.attr('transform', 'translate(-180, 10)');
+		map.attr('transform', 'translate(-180, 10)');
 
 		select = svg.append('g')
 			.attr('class', 'selected');
@@ -113,8 +114,10 @@
 		map.selectAll('.country')
 			.data(world.features)
 			.enter().append('path')
-			.attr('class', 'country')
-			.attr('d', projection);
+			.attr({
+                class: 'country',
+                d: projection
+            });
 
 		map.selectAll('.country')
 			.on('mouseover', function(d) {
@@ -185,22 +188,28 @@
 		chart.attr('transform', 'translate(820, 10)');
 
 		chart.append('rect')
-			.attr('width', chartWidth + 100)
-			.attr('height', chartHeight + 70)
-			.attr('x', 0)
-			.attr('fill', '#fff')
-			.attr('stroke', 'black');
+			.attr({
+                width: chartWidth + 100,
+                height: chartHeight + 70,
+                x: 0,
+                fill: '#fff',
+                stroke: 'black'
+            });
 
 		top = chartHeight + margin.top;
 
 		chart.append('g')
-			.attr('class', 'x axis')
-			.attr('transform', 'translate(' + margin.left + ',' + top + ')')
+			.attr({
+                class: 'x axis',
+                transform: 'translate(' + margin.left + ',' + top + ')'
+            })
 			.call(chartXAxis);
 
 		chart.append('g')
-			.attr('class', 'y axis')
-			.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+			.attr({
+                class: 'y axis',
+                transform: 'translate(' + margin.left + ',' + margin.top + ')'
+            })
 			.call(chartYAxis);
 
 	}
@@ -214,14 +223,18 @@
 			.text('Belarus');
 
 		hover.append('text')
-			.attr('class', 'year')
-			.text('2000')
-			.attr('transform', 'translate(0, 20)');
+			.attr({
+                class: 'year',
+                transform: 'translate(0, 20)'
+            })
+			.text('2000');
 
 		hover.append('text')
-			.attr('class', 'data')
-			.text('data')
-			.attr('transform', 'translate(0, 40)');
+			.attr({
+                class: 'data',
+                transform: 'translate(0, 40)'
+            })
+            .text('data')
 	}
 
 
@@ -239,32 +252,35 @@
 
 
 		var chartItem = chart.append('g')
-			.attr('class', 'country-area ' + country.id);
+            .attr({
+                transform: 'translate(' + margin.left + ',' + margin.top + ')',
+                class: 'country-area ' + country.id
+            });
 
 		chartAreaPath = chartItem.append('path').attr('class', 'area');
 		chartLinePath = chartItem.append('path').attr('class', 'line');
 
 		chartAreaPath
 			.datum(data.filter(function(d) {if (d[1]) return d; }))
-			.attr('d', chartArea)
-			.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+            .transition().delay(function (d,i){ return i * 300;}).duration(300)
+			.attr('d', chartArea);
 
 		chartLinePath
 			.datum(data.filter(function(d) {if (d[1]) return d; }))
-			.attr('d', chartLine)
-			.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+			.attr('d', chartLine);
 
 		var dots = chartItem.append('g')
-			.attr('class', 'dots')
-			.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+			.attr('class', 'dots');
 
 		dots.selectAll('.dot')
 			.data(data.filter(function(d) {if (d[1]) return d; }))
 			.enter().append('circle')
-			.attr('class', 'dot')
-			.attr('cx', chartLine.x())
-			.attr('cy', chartLine.y())
-			.attr('r', 3)
+			.attr({
+                class: 'dot',
+                cx: chartLine.x(),
+                cy: chartLine.y(),
+                r: 3
+            })
 			.on('mouseover', function(d) {
 				var xy = d3.mouse(this),
 					deltaX = 780,
@@ -310,12 +326,14 @@
 
 		while (i < colors.length) {
 			legend.append('rect')
-					.attr('width', itemWidth)
-					.attr('height', itemHeight)
-					.attr('x', i * itemWidth)
-					.attr('fill', function(d) {
-						return colors[i];
-					});
+                .attr({
+                    width: itemWidth,
+                    height: itemHeight,
+                    x: i * itemWidth,
+                    fill: function(d) {
+                        return colors[i];
+                    }
+                });
 
 			i++;
 		}

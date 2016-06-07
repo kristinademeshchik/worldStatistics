@@ -36,12 +36,12 @@ g.button:hover {
   cursor: pointer;
 }
 .country-area .area {
-  transition: opacity 300ms ease;
+  transition: opacity 100ms ease;
   opacity: 0.3;
 }
 .country-area:hover .area {
   opacity: 1;
-  transition: opacity 300ms ease;
+  transition: opacity 100ms ease;
 }
 .area {
   fill: #286fb7;
@@ -55,11 +55,11 @@ g.button:hover {
 .country {
   cursor: pointer;
   opacity: 0.6;
-  transition: opacity 300ms ease;
+  transition: opacity 100ms ease;
 }
 .country_selected {
   opacity: 1;
-  transition: opacity 300ms ease;
+  transition: opacity 100ms ease;
 }
 .dot {
   fill: #fff;
