@@ -12,12 +12,13 @@
 		chartArea,
 		chartLine,
 		chart,
+		chartInner,
 		countries,
 		colors,
 		hover,
 		text,
 		select,
-		chartWidth = 300,
+		chartWidth = 600,
 		chartHeight = 200,
 		timeDomain = [],
 		dataDomain = [],
@@ -187,7 +188,7 @@
 
 		chart = svg.append('g');
 
-		chart.attr('transform', 'translate(820, 10)');
+		chart.attr('transform', 'translate(20, 10)');
 
 		chart.append('rect')
 			.attr({
@@ -198,19 +199,23 @@
                 stroke: 'black'
             });
 
+        chartInner = chart.append('g')
+        	.attr({
+                transform: 'translate(0,0)'
+            })
+
 		top = chartHeight + margin.top;
 
-		chart.append('g')
+		chartInner.append('g')
 			.attr({
                 class: 'x axis',
-                transform: 'translate(' + margin.left + ',' + top + ')'
+                transform: 'translate(0,' + chartHeight + ')'
             })
 			.call(chartXAxis);
 
-		chart.append('g')
+		chartInner.append('g')
 			.attr({
-                class: 'y axis',
-                transform: 'translate(' + margin.left + ',' + margin.top + ')'
+                class: 'y axis'
             })
 			.call(chartYAxis);
 
@@ -239,7 +244,7 @@
 
         chart = svg.append('g');
 
-        chart.attr('transform', 'translate(820, 10)');
+        chart.attr('transform', 'translate(20, 10)');
 
         chart.append('rect')
             .attr({
@@ -250,22 +255,27 @@
                 stroke: 'black'
             });
 
+        chartInner = chart.append('g')
+        	.attr({
+                transform: 'translate(' + margin.left + ',' + margin.top + ')'
+            })
+
         top = chartHeight + margin.top;
 
-        chart.append('g')
+        chartInner.append('g')
             .attr({
                 class: 'x axis',
-                transform: 'translate(' + margin.left + ',' + top + ')'
+                transform: 'translate(0,' + chartHeight + ')'
             })
             .call(chartXAxis);
 
-        chart.append('g')
+        chartInner.append('g')
             .attr({
-                class: 'y axis',
-                transform: 'translate(' + margin.left + ',' + margin.top + ')'
+                class: 'y axis'
             })
             .call(chartYAxis);
     }
+
 	function renderHoverData() {
 		hover = svg.append('g')
 			.attr('transform', 'translate(' + (-1000) + ',' + (-1000) + ')');
@@ -370,9 +380,8 @@
             .domain(dataDomain)
             .range([0, chartHeight]);
 
-        var chartItem = chart.append('g')
+        var chartItem = chartInner.append('g')
             .attr({
-                transform: 'translate(' + margin.left + ',' + margin.top + ')',
                 class: 'country-area ' + country.id
             });
 
@@ -394,6 +403,7 @@
                 y: chartHeight,
                 height: 0,
                 width: function(d) {
+                	console.log(xScale.rangeBand(d[0]));
                     return xScale.rangeBand(d[0]) - 1;
                 },
                 class: 'rect'
