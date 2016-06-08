@@ -153,12 +153,12 @@
 	}
 
 	function renderChart() {
-		var top,
-			chartX = d3.time.scale()
+		var top;
+
+        var chartX = d3.time.scale()
 			.domain(timeDomain)
 			.range([0, chartWidth]);
 
-		var data = dictToList(countries[1].properties);
 		var chartY = d3.scale.linear()
 			.domain(dataDomain)
 			.range([chartHeight, 0]);
@@ -217,12 +217,12 @@
 	}
 
     function renderRectChart() {
-        var top,
-            chartX = d3.time.scale()
-                .domain(timeDomain)
-                .range([0, chartWidth]);
+        var top;
 
-        var data = dictToList(countries[1].properties);
+        var chartX = d3.time.scale()
+            .domain(timeDomain)
+            .range([0, chartWidth]);
+
         var chartY = d3.scale.linear()
             .domain(dataDomain)
             .range([chartHeight, 0]);
@@ -230,7 +230,6 @@
         var chartXAxis = d3.svg.axis()
             .scale(chartX)
             .orient('bottom')
-            .ticks(years.length /2)
             .tickFormat(d3.format('.0f'));
 
         var chartYAxis = d3.svg.axis()
@@ -364,7 +363,7 @@
             data = dictToList(dataset);
 
         var xScale = d3.scale.ordinal()
-            .domain(timeDomain)
+            .domain(years)
             .rangeRoundBands([0, chartWidth]);
 
         var yScale = d3.scale.linear()
@@ -384,8 +383,6 @@
             .append('g')
             .attr({
                 transform: function (d, i) {
-                    console.log(xScale(d[0]));
-                    console.log(d[0]);
                    if (d[1]) return 'translate(' + xScale(d[0]) + ', 0)';
                 },
                 class: 'rect-group'
@@ -397,7 +394,6 @@
                 y: chartHeight,
                 height: 0,
                 width: function(d) {
-                    console.log(xScale.rangeBand(d[0]) - 1);
                     return xScale.rangeBand(d[0]) - 1;
                 },
                 class: 'rect'
