@@ -132,7 +132,6 @@
 
 		fillMap();
 		renderChart();
-        //renderRectChart();
 		renderHoverData();
 		drawLegend();
 	}
@@ -141,7 +140,6 @@
 
 		if (!context.classList.contains('country_selected')) {
 			setChartData(d);
-			//setRectChartData(d);
 			context.classList.add('country_selected');
 		}
 
@@ -158,7 +156,6 @@
 			.domain(timeDomain)
 			.range([0, chartWidth]);
 
-		var data = dictToList(countries[1].properties);
 		var chartY = d3.scale.linear()
 			.domain(dataDomain)
 			.range([chartHeight, 0]);
@@ -216,57 +213,6 @@
 
 	}
 
-    function renderRectChart() {
-        var top,
-            chartX = d3.time.scale()
-                .domain(timeDomain)
-                .range([0, chartWidth]);
-
-        var data = dictToList(countries[1].properties);
-        var chartY = d3.scale.linear()
-            .domain(dataDomain)
-            .range([chartHeight, 0]);
-
-        var chartXAxis = d3.svg.axis()
-            .scale(chartX)
-            .orient('bottom')
-            .ticks(years.length /2)
-            .tickFormat(d3.format('.0f'));
-
-        var chartYAxis = d3.svg.axis()
-            .scale(chartY)
-            .orient('left')
-            .tickValues(chartY.domain());
-
-        chart = svg.append('g');
-
-        chart.attr('transform', 'translate(820, 10)');
-
-        chart.append('rect')
-            .attr({
-                width: chartWidth + 100,
-                height: chartHeight + 70,
-                x: 0,
-                fill: '#fff',
-                stroke: 'black'
-            });
-
-        top = chartHeight + margin.top;
-
-        chart.append('g')
-            .attr({
-                class: 'x axis',
-                transform: 'translate(' + margin.left + ',' + top + ')'
-            })
-            .call(chartXAxis);
-
-        chart.append('g')
-            .attr({
-                class: 'y axis',
-                transform: 'translate(' + margin.left + ',' + margin.top + ')'
-            })
-            .call(chartYAxis);
-    }
 	function renderHoverData() {
 		hover = svg.append('g')
 			.attr('transform', 'translate(' + (-1000) + ',' + (-1000) + ')');
@@ -358,56 +304,6 @@
 				hover.attr('transform', 'translate(' + (-1000) + ',' + (-1000) + ')');
 			});
 	}
-
-    function setRectChartData(country) {
-        var dataset =  country.properties,
-            data = dictToList(dataset);
-
-        var xScale = d3.scale.linear()
-            .domain(timeDomain)
-            .range([0, chartWidth]);
-
-        var yScale = d3.scale.linear()
-            .domain(dataDomain)
-            .range([0, chartHeight]);
-
-        var chartItem = chart.append('g')
-            .attr({
-                transform: 'translate(' + margin.left + ',' + margin.top + ')',
-                class: 'country-area ' + country.id
-            });
-
-        var bars = chartItem
-            .selectAll('g.bar-group')
-            .data(data)
-            .enter()
-            .append('g')
-            .attr({
-                transform: function (d, i) {
-                   if (d[1]) return 'translate(' + xScale(d[0]) + ', 0)';
-                },
-                class: 'rect-group'
-            });
-
-
-        bars.append('rect')
-            .attr({
-                y: chartHeight,
-                height: 0,
-                width: 76,
-                class: 'rect'
-            })
-            .transition()
-            .duration(1500)
-            .attr({
-                y: function (d, i) {
-                    if (d[1]) return yScale(d[1]);
-                },
-                height: function (d, i) {
-                    if (d[1]) return chartHeight - yScale(d[1]);
-                }
-            });
-    }
 
 	function dictToList(dict) {
 
