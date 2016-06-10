@@ -76,3 +76,7 @@ g.button:hover {
 .selected-countries {
   opacity: 0.8;
 }
+.tick line {
+  stroke: #777;
+  stroke-dasharray: 2, 2;
+}

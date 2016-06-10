@@ -18,7 +18,7 @@
 		hover,
 		text,
 		select,
-		chartWidth = 600,
+		chartWidth = 800,
 		chartHeight = 200,
 		timeDomain = [],
 		dataDomain = [],
@@ -202,7 +202,7 @@
         chartInner = chart.append('g')
         	.attr({
                 transform: 'translate(0,0)'
-            })
+            });
 
 		top = chartHeight + margin.top;
 
@@ -240,6 +240,7 @@
         var chartYAxis = d3.svg.axis()
             .scale(chartY)
             .orient('left')
+            .tickSize(width)
             .tickValues(chartY.domain());
 
         chart = svg.append('g');
