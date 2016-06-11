@@ -149,7 +149,19 @@
 
 		else {
 			context.classList.remove('country_selected');
-			d3.selectAll('.' + d.id).remove();
+
+			setTimeout(function() {
+				d3.selectAll('.' + d.id).remove();
+			}, 1500);
+
+			d3.selectAll('.' + d.id + ' rect')
+				.transition()
+				.duration(1500)
+				.attr({
+					y: chartHeight,
+					height: 0
+				});
+
 		}
 
 	}
@@ -192,12 +204,19 @@
             })
             .call(axis.x);
 
-        chartInner.append('g')
+        var gy = chartInner.append('g')
             .attr({
                 class: 'y axis'
             })
             .call(axis.y);
-    }
+
+
+		gy.selectAll("text")
+			.attr({
+				x: -12,
+				dy: -4
+			})
+	}
 
 	function renderHoverData() {
 		hover = svg.append('g')
@@ -319,7 +338,6 @@
             });
 
 		var color = 'rgb('+ getRandom(0, 255) +', '+ getRandom(0, 255) +', '+ getRandom(0, 255) +')';
-		console.log(color);
 
         bars.append('rect')
             .attr({
@@ -338,8 +356,8 @@
                 },
                 height: function (d, i) {
                     if (d[1]) return chartHeight - convert.y(d[1]);
-                },
-				fill: color
+                }
+				//fill: color
             });
     }
 
