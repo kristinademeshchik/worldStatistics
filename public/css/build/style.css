@@ -88,3 +88,12 @@ g.button:hover {
 .chart-inner {
   fill: #fff;
 }
+.rect-switch {
+  cursor: pointer;
+}
+.rect-switch text {
+  fill: #fff;
+}
+.rect-switch circle {
+  fill: #fff;
+}

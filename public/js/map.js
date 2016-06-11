@@ -137,6 +137,46 @@
 		renderChart();
         renderHoverData();
 		drawLegend();
+		addSwitcherChartType()
+	}
+
+	function addSwitcherChartType() {
+		var areaSwitcher = svg.append('g')
+			.attr('class', 'rect-switch'),
+
+			rectSwitcher = svg.append('g')
+				.attr({
+					class: 'rect-switch',
+					transform: 'translate(0, 50)'
+				});
+
+		areaSwitcher.append('circle')
+			.attr({
+				cx: 10,
+				cy: 90,
+				r: 10
+			});
+
+		areaSwitcher.append('text')
+			.attr({
+				x: 30,
+				y: 95
+			})
+			.text('Area chart');
+
+		rectSwitcher.append('circle')
+			.attr({
+				cx: 10,
+				cy: 90,
+				r: 10
+			});
+
+		rectSwitcher.append('text')
+			.attr({
+				x: 30,
+				y: 95
+			})
+			.text('Rect chart');
 	}
 
 	function setSelected(d, context) {
