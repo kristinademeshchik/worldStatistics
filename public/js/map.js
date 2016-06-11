@@ -5,7 +5,7 @@
 		width = 1020,
 		height = 800,
 		years = [],
-		defaultColor = '#ccc',
+		defaultColor = '#ffffff',
 		svg,
 		axis,
 		convert,
@@ -190,7 +190,19 @@
 
         chart = svg.append('g');
 
-        chart.attr('transform', 'translate(120, 0)');
+        chart.attr({
+			class: 'chart',
+			transform: 'translate(120, 0)'
+		});
+
+		chartInner = chart.append('rect')
+			.attr({
+				width: chartWidth + 70,
+				height: chartHeight + 70,
+				rx: 3,
+				ry: 3,
+				class: 'chart-inner'
+			});
 
         chartInner = chart.append('g')
         	.attr({

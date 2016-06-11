@@ -1,11 +1,10 @@
 body {
   text-align: center;
   font-family: Arial;
+  background: #234c75;
 }
 #map {
-  padding: 20px 20px 0;
   display: inline-block;
-  border: solid #000 1px;
 }
 .country {
   stroke: #000;
@@ -58,7 +57,7 @@ g.button:hover {
 }
 .country {
   cursor: pointer;
-  opacity: 0.6;
+  opacity: 0.8;
   transition: opacity 100ms ease;
 }
 .country_selected {
@@ -85,4 +84,7 @@ g.button:hover {
 }
 .rect-group {
   opacity: 0.6;
+}
+.chart-inner {
+  fill: #fff;
 }
