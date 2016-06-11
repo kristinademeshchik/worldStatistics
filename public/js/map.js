@@ -14,6 +14,10 @@
 		chartArea,
 		chartLine,
 		chart,
+		activeChart = {
+			'rect': true,
+			'area': false
+		},
 		chartInner,
 		countries,
 		colors,
@@ -21,7 +25,7 @@
 		text,
 		select,
 		chartWidth = 700,
-		chartHeight = 200,
+		chartHeight = 180,
 		timeDomain = [],
 		dataDomain = [],
 		margin = {top: 30, right: 40, bottom: 40, left: 40};
@@ -109,7 +113,7 @@
 
 		var map = svg.append('g');
 
-		map.attr('transform', 'translate(0, 140)');
+		map.attr('transform', 'translate(0, 80)');
 
 		select = svg.append('g')
 			.attr('class', 'selected');
@@ -142,13 +146,35 @@
 
 	function addSwitcherChartType() {
 		var areaSwitcher = svg.append('g')
-			.attr('class', 'rect-switch'),
+			.attr({
+				class: 'area-switch'
+			})
+			.on('click', function() {
+				this.classList.add('active');
+				d3.selectAll(".rect-switch")
+					.classed('active', false);
 
-			rectSwitcher = svg.append('g')
-				.attr({
-					class: 'rect-switch',
-					transform: 'translate(0, 50)'
-				});
+				activeChart.rect = false;
+				activeChart.area = true;
+
+				clearMap();
+			});
+
+		var rectSwitcher = svg.append('g')
+			.attr({
+				class: 'rect-switch active',
+				transform: 'translate(0, 50)'
+			})
+			.on('click', function() {
+				this.classList.add('active');
+				d3.selectAll(".area-switch")
+					.classed('active', false);
+
+				activeChart.rect = true;
+				activeChart.area = false;
+
+				clearMap();
+			});
 
 		areaSwitcher.append('circle')
 			.attr({
@@ -182,8 +208,15 @@
 	function setSelected(d, context) {
 
 		if (!context.classList.contains('country_selected')) {
-			//setChartData(d);
-			setRectChartData(d);
+
+			if (activeChart.rect) {
+				setRectChartData(d);
+			}
+
+			else {
+				setChartData(d);
+			}
+
 			context.classList.add('country_selected');
 		}
 
@@ -368,6 +401,10 @@
 			});
 	}
 
+	function clearMap() {
+		d3.selectAll('.country-area').remove();
+	}
+
     function setRectChartData(country) {
         var dataset =  country.properties,
             data = dictToList(dataset);
@@ -409,7 +446,6 @@
                 height: function (d, i) {
                     if (d[1]) return chartHeight - convert.y(d[1]);
                 }
-				//fill: color
             });
     }
 
@@ -433,7 +469,7 @@
 			itemWidth = 20,
 			i = 0;
 
-			legend.attr('transform', 'translate(10, 770)');
+			legend.attr('transform', 'translate(10, 750)');
 
 		while (i < colors.length) {
 			legend.append('rect')

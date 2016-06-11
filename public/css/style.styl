@@ -6,6 +6,10 @@ body
 #map
   display: inline-block
 
+.title
+  color: #fff
+  font-weight: normal
+
 .country
   stroke: black
   stroke-width: 0.1
@@ -40,12 +44,6 @@ g.button:hover
   .area
     transition: opacity 100ms ease
     opacity 0.3
-
-  &:hover
-
-    .area
-      opacity: 1
-      transition: opacity 100ms ease
 
 .area,
 .rect
@@ -90,10 +88,28 @@ g.button:hover
 .chart-inner
   fill: #fff
 
-.rect-switch
+.rect-switch,
+.area-switch
   cursor: pointer
   text
     fill: #fff
+    opacity: 0.5
+    transition: opacity 100ms ease
 
   circle
-    fill: #d2c286;
+    fill: #d2c286
+    opacity: 0.5
+    transition: opacity 100ms ease
+
+  &:hover
+    circle,
+    text
+      opacity: 1
+      transition: opacity 100ms ease
+
+  &.active
+    text
+      opacity: 1
+
+    circle
+      opacity: 1
