@@ -1,49 +1,52 @@
-(function() {
-    console.log('app started');
+var margin = {top: 20, right: 0, bottom: 20, left: 0},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
 
-    var width = 1220,
-        height = 600,
-        svg,
-        employees = [
-            {dept: 'A', age : 22},
-            {dept: 'B', age : 26},
-            {dept: 'C', age : 35},
-            {dept: 'D', age : 30},
-            {dept: 'E', age : 27}
-        ];
+var formatNumber = d3.format(".1f");
 
-    function init() {
-        svg = d3.select('#map').append('svg')
-            .attr({
-                width: width,
-                height: height
-            });
+var y = d3.scale.linear()
+    .domain([0, 1])
+    .range([height, 0]);
 
+var x = d3.time.scale()
+    .domain([new Date(2010, 7, 1), new Date(2012, 7, 1)])
+    .range([0, width]);
 
-        var chartX = d3.time.scale()
-            .domain(
-                employees.map(function(d) {
-                    return d.dept;
-                })
-            )
-            .range([0, chartWidth]);
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .ticks(d3.time.years)
+    .orient("bottom");
 
-        var chartY = d3.scale.linear()
-            .range([chartHeight, 0]);
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .tickSize(width)
+    .orient("right");
 
-        var chartXAxis = d3.svg.axis()
-            .scale(chartX)
-            .orient('bottom')
-            .tickFormat(d3.format('.0f'));
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        var chartYAxis = d3.svg.axis()
-            .scale(chartY)
-            .orient('left')
-            .tickSize(width)
-            .tickValues(chartY.domain());
+svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis);
 
+var gy = svg.append("g")
+    .attr("class", "y axis")
+    .call(yAxis);
 
-    }
+gy.selectAll("g").filter(function(d) { return d; })
+    .classed("minor", true);
 
-    init();
-})();
+gy.selectAll("text")
+    .attr("x", 4)
+    .attr("dy", -4);
+
+function formatCurrency(d) {
+    var s = formatNumber(d / 1e6);
+    return d === y.domain()[1]
+        ? "$" + s + " million"
+        : s;
+}

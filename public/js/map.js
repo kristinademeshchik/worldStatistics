@@ -2,11 +2,13 @@
 	console.log('app started');
 
 	var map = d3.select('#map'),
-		width = 1220,
-		height = 600,
+		width = 1020,
+		height = 800,
 		years = [],
 		defaultColor = '#ccc',
 		svg,
+		axis,
+		convert,
 		chartAreaPath,
 		chartLinePath,
 		chartArea,
@@ -18,7 +20,7 @@
 		hover,
 		text,
 		select,
-		chartWidth = 800,
+		chartWidth = 700,
 		chartHeight = 200,
 		timeDomain = [],
 		dataDomain = [],
@@ -91,7 +93,7 @@
 		}
 
 		timeDomain = [d3.min(years), d3.max(years)];
-		dataDomain = [d3.min(dataValues), d3.max(dataValues)];
+		dataDomain = [0, d3.max(dataValues)];
 
 		renderMap(world);
 	}
@@ -107,7 +109,7 @@
 
 		var map = svg.append('g');
 
-		map.attr('transform', 'translate(-180, 10)');
+		map.attr('transform', 'translate(0, 140)');
 
 		select = svg.append('g')
 			.attr('class', 'selected');
@@ -132,9 +134,8 @@
 			});
 
 		fillMap();
-		//renderChart();
-        renderRectChart();
-		renderHoverData();
+		renderChart();
+        renderHoverData();
 		drawLegend();
 	}
 
@@ -153,128 +154,49 @@
 
 	}
 
-	function renderChart() {
-		var top;
+    function renderChart() {
+		convert = {
+			x: d3.scale.ordinal(),
+			y: d3.scale.linear()
+		};
 
-        var chartX = d3.time.scale()
-			.domain(timeDomain)
-			.range([0, chartWidth]);
+		axis = {
+			x: d3.svg.axis().orient('bottom'),
+			y: d3.svg.axis().orient('right')
+		};
 
-		var chartY = d3.scale.linear()
-			.domain(dataDomain)
-			.range([chartHeight, 0]);
+		axis.x.scale(convert.x);
+		axis.y.scale(convert.y);
 
-		var chartXAxis = d3.svg.axis()
-			.scale(chartX)
-			.orient('bottom')
-			.ticks(years.length /2)
-			.tickFormat(d3.format('.0f'));
+		axis.y.tickSize(chartWidth);
 
-		var chartYAxis = d3.svg.axis()
-			.scale(chartY)
-			.orient('left')
-			.tickValues(chartY.domain());
+		convert.x.rangeRoundBands([0, chartWidth]);
+		convert.y.range([chartHeight, 0]);
 
-		chartLine = d3.svg.line()
-			.defined(function(d) { return d[1]; })
-			.x(function(d) { return chartX(d[0]); })
-			.y(function(d) { return chartY(d[1]); });
-
-		chartArea = d3.svg.area()
-			.defined(chartLine.defined())
-			.x(chartLine.x())
-			.y0(chartHeight)
-			.y1(chartLine.y());
-
-		chart = svg.append('g');
-
-		chart.attr('transform', 'translate(20, 10)');
-
-		chart.append('rect')
-			.attr({
-                width: chartWidth + 100,
-                height: chartHeight + 70,
-                x: 0,
-                fill: '#fff',
-                stroke: 'black'
-            });
-
-        chartInner = chart.append('g')
-        	.attr({
-                transform: 'translate(0,0)'
-            });
-
-		top = chartHeight + margin.top;
-
-		chartInner.append('g')
-			.attr({
-                class: 'x axis',
-                transform: 'translate(0,' + chartHeight + ')'
-            })
-			.call(chartXAxis);
-
-		chartInner.append('g')
-			.attr({
-                class: 'y axis'
-            })
-			.call(chartYAxis);
-
-	}
-
-    function renderRectChart() {
-        var top;
-
-        var chartX = d3.time.scale()
-            .domain(timeDomain)
-            .range([0, chartWidth]);
-
-        var chartY = d3.scale.linear()
-            .domain(dataDomain)
-            .range([chartHeight, 0]);
-
-        var chartXAxis = d3.svg.axis()
-            .scale(chartX)
-            .orient('bottom')
-            .tickFormat(d3.format('.0f'));
-
-        var chartYAxis = d3.svg.axis()
-            .scale(chartY)
-            .orient('left')
-            .tickSize(width)
-            .tickValues(chartY.domain());
+		convert.x.domain(years);
+		convert.y.domain(dataDomain);
 
         chart = svg.append('g');
 
-        chart.attr('transform', 'translate(20, 10)');
-
-        chart.append('rect')
-            .attr({
-                width: chartWidth + 100,
-                height: chartHeight + 70,
-                x: 0,
-                fill: '#fff',
-                stroke: 'black'
-            });
+        chart.attr('transform', 'translate(120, 0)');
 
         chartInner = chart.append('g')
         	.attr({
                 transform: 'translate(' + margin.left + ',' + margin.top + ')'
-            })
-
-        top = chartHeight + margin.top;
+            });
 
         chartInner.append('g')
             .attr({
                 class: 'x axis',
                 transform: 'translate(0,' + chartHeight + ')'
             })
-            .call(chartXAxis);
+            .call(axis.x);
 
         chartInner.append('g')
             .attr({
                 class: 'y axis'
             })
-            .call(chartYAxis);
+            .call(axis.y);
     }
 
 	function renderHoverData() {
@@ -288,47 +210,57 @@
 		hover.append('text')
 			.attr({
                 class: 'year',
-                transform: 'translate(0, 20)'
+                transform: 'translate(0, 15)'
             })
 			.text('2000');
 
 		hover.append('text')
 			.attr({
                 class: 'data',
-                transform: 'translate(0, 40)'
+                transform: 'translate(0, 30)'
             })
             .text('data')
 	}
 
-
 	function setChartData(country) {
 		var dataset =  country.properties,
-			 data = dictToList(dataset);
+			data = dictToList(dataset);
 
-		var xScale = d3.scale.linear()
-			.domain(timeDomain)
-			.range([0, chartWidth]);
+		var chartItem = chartInner.append('g')
+			.attr({
+				class: 'country-area ' + country.id
+			});
 
-		var yScale = d3.scale.linear()
-			.domain(dataDomain)
-        .range([0, chartHeight]);
+		chartLine = d3.svg.line()
+			.defined(function(d) {
+				return d[1];
+			})
+			.x(function(d) {
+				return convert.x(d[0]);
+			})
+			.y(function(d) {
+				return convert.y(d[1]);
+			});
 
-
-		var chartItem = chart.append('g')
-            .attr({
-                transform: 'translate(' + margin.left + ',' + margin.top + ')',
-                class: 'country-area ' + country.id
-            });
+		chartArea = d3.svg.area()
+			.defined(chartLine.defined())
+			.x(chartLine.x())
+			.y0(chartHeight)
+			.y1(chartLine.y());
 
 		chartAreaPath = chartItem.append('path').attr('class', 'area');
 		chartLinePath = chartItem.append('path').attr('class', 'line');
 
 		chartAreaPath
-			.datum(data.filter(function(d) {if (d[1]) return d; }))
+			.datum(data.filter(function(d) {
+				if (d[1]) return d;
+			}))
 			.attr('d', chartArea);
 
 		chartLinePath
-			.datum(data.filter(function(d) {if (d[1]) return d; }))
+			.datum(data.filter(function(d) {
+				if (d[1]) return d;
+			}))
 			.attr('d', chartLine);
 
 		var dots = chartItem.append('g')
@@ -345,17 +277,13 @@
             })
 			.on('mouseover', function(d) {
 				var xy = d3.mouse(this),
-					deltaX = 780,
-					deltaY = 25,
-					x = (xy[0]) + deltaX,
-					y = (xy[1] - chartHeight - deltaY);
+					x,
+					y,
+					deltaX = 790,
+					deltaY = 15;
 
-				if (width - xy[0] < chartWidth) {
-					x = xy[0] - chartWidth + deltaX;
-				}
-				if (xy[1] < chartHeight) {
-					y = xy[1] - deltaY;
-				}
+				x = xy[0] - chartWidth + deltaX;
+				y = xy[1] - deltaY;
 
 				hover.attr('transform', 'translate(' + x + ',' + y + ')');
 
@@ -373,14 +301,6 @@
         var dataset =  country.properties,
             data = dictToList(dataset);
 
-        var xScale = d3.scale.ordinal()
-            .domain(years)
-            .rangeRoundBands([0, chartWidth]);
-
-        var yScale = d3.scale.linear()
-            .domain(dataDomain)
-            .range([0, chartHeight]);
-
         var chartItem = chartInner.append('g')
             .attr({
                 class: 'country-area ' + country.id
@@ -393,19 +313,17 @@
             .append('g')
             .attr({
                 transform: function (d, i) {
-                   if (d[1]) return 'translate(' + xScale(d[0]) + ', 0)';
+                   if (d[1]) return 'translate(' + convert.x(d[0]) + ', 0)';
                 },
                 class: 'rect-group'
             });
-
 
         bars.append('rect')
             .attr({
                 y: chartHeight,
                 height: 0,
                 width: function(d) {
-                	console.log(xScale.rangeBand(d[0]));
-                    return xScale.rangeBand(d[0]) - 1;
+                    return convert.x.rangeBand(d[0]) - 1;
                 },
                 class: 'rect'
             })
@@ -413,10 +331,10 @@
             .duration(1500)
             .attr({
                 y: function (d, i) {
-                    if (d[1]) return yScale(d[1]);
+                    if (d[1]) return convert.y(d[1]);
                 },
                 height: function (d, i) {
-                    if (d[1]) return chartHeight - yScale(d[1]);
+                    if (d[1]) return chartHeight - convert.y(d[1]);
                 }
             });
     }
@@ -436,7 +354,7 @@
 			itemWidth = 20,
 			i = 0;
 
-			legend.attr('transform', 'translate(10, 570)');
+			legend.attr('transform', 'translate(10, 770)');
 
 		while (i < colors.length) {
 			legend.append('rect')
