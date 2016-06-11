@@ -361,6 +361,7 @@
 			}))
 			.attr('d', chartArea);
 
+
 		chartLinePath
 			.datum(data.filter(function(d) {
 				if (d[1]) return d;
@@ -402,7 +403,21 @@
 	}
 
 	function clearMap() {
-		d3.selectAll('.country-area').remove();
+
+		d3.selectAll('.country_selected')
+			.classed('country_selected', false);
+
+		setTimeout(function() {
+			d3.selectAll('.country-area').remove();
+		}, 1500);
+
+		d3.selectAll('.country-area rect')
+			.transition()
+			.duration(1500)
+			.attr({
+				y: chartHeight,
+				height: 0
+			});
 	}
 
     function setRectChartData(country) {
@@ -414,7 +429,8 @@
                 class: 'country-area ' + country.id
             });
 
-        var bars = chartItem
+		var color = 'rgb('+ getRandom(0, 255) +', '+ getRandom(0, 255) +', '+ getRandom(0, 255) +')';
+		var bars = chartItem
             .selectAll('g.bar-group')
             .data(data)
             .enter()
@@ -425,8 +441,6 @@
                 },
                 class: 'rect-group'
             });
-
-		var color = 'rgb('+ getRandom(0, 255) +', '+ getRandom(0, 255) +', '+ getRandom(0, 255) +')';
 
         bars.append('rect')
             .attr({
@@ -469,7 +483,7 @@
 			itemWidth = 20,
 			i = 0;
 
-			legend.attr('transform', 'translate(10, 750)');
+			legend.attr('transform', 'translate(10, 670)');
 
 		while (i < colors.length) {
 			legend.append('rect')
