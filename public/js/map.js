@@ -154,7 +154,7 @@
 			.attr({
 				cx: 10,
 				cy: 90,
-				r: 10
+				r: 7
 			});
 
 		areaSwitcher.append('text')
@@ -168,7 +168,7 @@
 			.attr({
 				cx: 10,
 				cy: 90,
-				r: 10
+				r: 7
 			});
 
 		rectSwitcher.append('text')
