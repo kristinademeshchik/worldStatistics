@@ -46,8 +46,7 @@ g.button:hover {
   opacity: 1;
   transition: opacity 100ms ease;
 }
-.area,
-.rect {
+.area {
   fill: #286fb7;
 }
 .line {

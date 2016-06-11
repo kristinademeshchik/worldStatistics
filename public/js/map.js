@@ -318,6 +318,9 @@
                 class: 'rect-group'
             });
 
+		var color = 'rgb('+ getRandom(0, 255) +', '+ getRandom(0, 255) +', '+ getRandom(0, 255) +')';
+		console.log(color);
+
         bars.append('rect')
             .attr({
                 y: chartHeight,
@@ -335,9 +338,15 @@
                 },
                 height: function (d, i) {
                     if (d[1]) return chartHeight - convert.y(d[1]);
-                }
+                },
+				fill: color
             });
     }
+
+	function getRandom(min, max) {
+		return Math.ceil(Math.random() * (max - min) + min);
+	}
+
 
 	function dictToList(dict) {
 
