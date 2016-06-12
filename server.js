@@ -20,6 +20,10 @@ app.get('/', function (req, res) {
     res.render('index', {});
 });
 
+app.get('/statistic', function (req, res) {
+    res.render('statistic', {});
+});
+
 
 var server = app.listen(process.env.PORT || 3000, function () {
     var host = server.address().address;

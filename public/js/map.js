@@ -157,7 +157,7 @@
 				activeChart.rect = false;
 				activeChart.area = true;
 
-				clearMap();
+				clearMap(1500);
 			});
 
 		var rectSwitcher = svg.append('g')
@@ -173,7 +173,7 @@
 				activeChart.rect = true;
 				activeChart.area = false;
 
-				clearMap();
+				clearMap(0);
 			});
 
 		areaSwitcher.append('circle')
@@ -402,14 +402,14 @@
 			});
 	}
 
-	function clearMap() {
+	function clearMap(timeout) {
 
 		d3.selectAll('.country_selected')
 			.classed('country_selected', false);
 
 		setTimeout(function() {
 			d3.selectAll('.country-area').remove();
-		}, 1500);
+		}, timeout);
 
 		d3.selectAll('.country-area rect')
 			.transition()
