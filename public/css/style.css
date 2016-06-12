@@ -1,7 +1,42 @@
+.body {
+  max-width: 1000px;
+  position: relative;
+  margin: 0 auto;
+}
 .center {
+  position: relative;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+}
+.data-circle {
+  display: block;
+  background: #fff;
+  position: absolute;
+  left: 70px;
+  top: 50px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: opacity 100ms ease;
+}
+.data-circle:hover {
+  opacity: 0.9;
+  transition: opacity 100ms ease;
+}
+.data-circle__inner {
+  display: table-cell;
+  vertical-align: middle;
+  width: 80px;
+  height: 80px;
+}
+.data-circle__title {
+  color: #4b937f;
+  margin: 0;
+}
+.header {
+  padding-bottom: 50px;
 }
 .header__title {
   text-align: right;
@@ -9,6 +44,9 @@
   font-weight: 300;
   font-size: 45px;
   text-transform: uppercase;
+}
+.map-page {
+  background: rgba(40,111,183,0.46);
 }
 #map {
   display: inline-block;
@@ -126,22 +164,152 @@ g.buttonhover {
 .area-switch.active circle {
   opacity: 1;
 }
+.polygon {
+  position: absolute;
+}
+.polygon_first {
+  left: 0;
+}
+.polygon_second {
+  left: 380px;
+}
+.polygon_third {
+  right: 0;
+}
+.polygon_forth {
+  top: 100px;
+  left: 190px;
+}
+.polygon_fifth {
+  top: 100px;
+  right: 190px;
+}
+.polygon_sixth {
+  top: 208px;
+  left: 380px;
+}
+.polygon__inner {
+  position: relative;
+  width: 240px;
+  height: 200px;
+}
 .triangle_top {
+  position: absolute;
   width: 0;
   height: 0;
-  border-left: 50px solid transparent;
-  border-right: 50px solid transparent;
+  border-left: 60px solid transparent;
+  border-right: 60px solid transparent;
   border-bottom: 100px solid #334957;
 }
 .triangle_bottom {
+  position: absolute;
   width: 0;
   height: 0;
-  border-left: 50px solid transparent;
-  border-right: 50px solid transparent;
-  border-bottom: 100px solid #334957;
+  border-left: 60px solid transparent;
+  border-right: 60px solid transparent;
+  border-top: 100px solid #334957;
+}
+.triangle_top1 {
+  left: 0;
+  top: 0;
+}
+.triangle_top2 {
+  top: 0;
+  left: 60px;
+}
+.triangle_top3 {
+  top: 0;
+  right: 0;
+}
+.triangle_bottom1 {
+  bottom: 0;
+  left: 0;
+}
+.triangle_bottom2 {
+  bottom: 0;
+  left: 60px;
+}
+.triangle_bottom3 {
+  bottom: 0;
+  right: 0;
+}
+.triangle_color1 {
+  border-bottom-color: #334957;
+}
+.triangle_color2 {
+  border-top-color: #538c97;
+}
+.triangle_color3 {
+  border-bottom-color: #7fcbbe;
+}
+.triangle_color4 {
+  border-top-color: #1c353e;
+}
+.triangle_color5 {
+  border-bottom-color: #b1dcc0;
+}
+.triangle_color6 {
+  border-top-color: #96cfc0;
+}
+.triangle_color7 {
+  border-bottom-color: #565c6a;
+}
+.triangle_color8 {
+  border-top-color: #b4c69e;
+}
+.triangle_color9 {
+  border-bottom-color: #efb6a3;
+}
+.triangle_color10 {
+  border-top-color: #3e283f;
+}
+.triangle_color11 {
+  border-bottom-color: #97903f;
+}
+.triangle_color12 {
+  border-top-color: #d1ae3a;
+}
+.triangle_color13 {
+  border-bottom-color: #b8ddbb;
+}
+.triangle_color14 {
+  border-top-color: #e8e7c8;
+}
+.triangle_color15 {
+  border-bottom-color: #c9db61;
+}
+.triangle_color16 {
+  border-top-color: #4b878f;
+}
+.triangle_color17 {
+  border-bottom-color: #084a5a;
+}
+.triangle_color18 {
+  border-top-color: #8dc064;
+}
+.triangle_color19 {
+  border-bottom-color: #d3bcd8;
+}
+.triangle_color20 {
+  border-top-color: #a957a1;
+}
+.triangle_color21 {
+  border-bottom-color: #ee75aa;
+}
+.triangle_color22 {
+  border-top-color: #4e2f8d;
+}
+.triangle_color23 {
+  border-bottom-color: #fde3d6;
+}
+.triangle_color24 {
+  border-top-color: #fbd0a5;
 }
 body {
   text-align: center;
   font-family: 'Roboto Condensed', sans-serif;
   background: #fff;
+}
+a {
+  text-decoration: none;
 }
