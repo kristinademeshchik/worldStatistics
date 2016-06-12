@@ -5,6 +5,10 @@ var express = require('express'),
     exphbs = require('express-handlebars'),
     app = express();
 
+
+var requestData = 'freedom',
+    reverse = true;
+
 app.use(express.static('public'));
 
 app.engine('handlebars', exphbs({
@@ -21,7 +25,10 @@ app.get('/', function (req, res) {
 });
 
 app.get('/statistic', function (req, res) {
-    res.render('statistic', {});
+    res.render('statistic', {
+        requestData: requestData,
+        reverse: reverse
+    });
 });
 
 

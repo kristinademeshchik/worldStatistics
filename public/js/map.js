@@ -54,6 +54,8 @@
 			'#1a9850',
 			'#006837'];
 
+		if (reverse) colors = colors.reverse();
+
 		defColor = 'white';
 		getColor = d3.scale.quantize()
 			.domain([33, 84])
@@ -65,7 +67,7 @@
 	function loadData() {
 		   queue()
 		  .defer(d3.json, '/data/topoworld.json')
-		  .defer(d3.csv, '/data/age.csv')
+		  .defer(d3.csv, '/data/' + requestData + '.csv')
 		  .await(processData);
 	}
 
