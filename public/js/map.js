@@ -7,6 +7,8 @@
 		years = [],
 		defaultColor = '#ffffff',
 		svg,
+		dots = [],
+		areaChartItem,
 		axis,
 		convert,
 		chartAreaPath,
@@ -317,7 +319,7 @@
 	}
 
 	function renderArea() {
-		var chartItem = chartInner.append('g')
+		areaChartItem = chartInner.append('g')
 			.attr({
 				class: 'country-area'
 			});
@@ -339,8 +341,9 @@
 			.y0(chartHeight)
 			.y1(chartLine.y());
 
-		chartAreaPath = chartItem.append('path').attr('class', 'area');
-		chartLinePath = chartItem.append('path').attr('class', 'line');
+		chartAreaPath = areaChartItem.append('path').attr('class', 'area');
+		chartLinePath = areaChartItem.append('path').attr('class', 'line');
+
 	}
 
 	function renderHoverData() {
@@ -383,39 +386,52 @@
 			}))
 			.transition().duration(1500)
 			.attr('d', chartLine);
+        //
+		//if (dots.length === 0) {
+		//	dots = areaChartItem.append('g')
+		//		.attr('class', 'dots');
+        //
+		//	dots.selectAll('.dot')
+		//		.data(data.filter(function(d) {if (d[1]) return d; }))
+		//		.enter().append('circle')
+		//		.attr({
+		//			class: 'dot',
+		//			cx: chartLine.x(),
+		//			cy: chartLine.y(),
+		//			r: 3
+		//		})
+		//		.on('mouseover', function(d) {
+		//			var xy = d3.mouse(this),
+		//				x,
+		//				y,
+		//				deltaX = 790,
+		//				deltaY = 15;
+        //
+		//			x = xy[0] - chartWidth + deltaX;
+		//			y = xy[1] - deltaY;
+        //
+		//			hover.attr('transform', 'translate(' + x + ',' + y + ')');
+        //
+		//			hover.select('.country-name').text('Country: ' + country.country);
+		//			hover.select('.year').text('Year: ' + d[0]);
+		//			hover.select('.data').text('Average years: ' + d[1].toFixed(2));
+        //
+		//		})
+		//		.on('mouseout', function() {
+		//			hover.attr('transform', 'translate(' + (-1000) + ',' + (-1000) + ')');
+		//		});
+		//}
+        //
+		//else {
+		//	dots.selectAll('.dot circle')
+		//		.attr({
+		//			cx: chartLine.x(),
+		//			cy: chartLine.y()
+		//		})
+        //
+		//	console.log(chartLine.x());
+		//}
 
-		//var dots = chartItem.append('g')
-		//	.attr('class', 'dots');
-        //
-		//dots.selectAll('.dot')
-		//	.data(data.filter(function(d) {if (d[1]) return d; }))
-		//	.enter().append('circle')
-		//	.attr({
-         //       class: 'dot',
-         //       cx: chartLine.x(),
-         //       cy: chartLine.y(),
-         //       r: 3
-         //   })
-		//	.on('mouseover', function(d) {
-		//		var xy = d3.mouse(this),
-		//			x,
-		//			y,
-		//			deltaX = 790,
-		//			deltaY = 15;
-        //
-		//		x = xy[0] - chartWidth + deltaX;
-		//		y = xy[1] - deltaY;
-        //
-		//		hover.attr('transform', 'translate(' + x + ',' + y + ')');
-        //
-		//		hover.select('.country-name').text('Country: ' + country.country);
-		//		hover.select('.year').text('Year: ' + d[0]);
-		//		hover.select('.data').text('Average years: ' + d[1].toFixed(2));
-        //
-		//	})
-		//	.on('mouseout', function() {
-		//		hover.attr('transform', 'translate(' + (-1000) + ',' + (-1000) + ')');
-		//	});
 	}
 
 	function clearMap(timeout) {
