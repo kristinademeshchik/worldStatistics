@@ -25,7 +25,7 @@
 		text,
 		select,
 		chartWidth = 700,
-		chartHeight = 180,
+		chartHeight = 190,
 		timeDomain = [],
 		dataDomain = [],
 		margin = {top: 30, right: 40, bottom: 40, left: 40};
@@ -270,18 +270,27 @@
 			transform: 'translate(120, 0)'
 		});
 
-		chartInner = chart.append('rect')
+		chart.append('rect')
 			.attr({
+
 				width: chartWidth + 70,
-				height: chartHeight + 70,
+				height: chartHeight + 115,
 				rx: 3,
 				ry: 3,
 				class: 'chart-inner'
 			});
 
+		chart.append('text')
+			.attr({
+				class: 'title',
+				x: 30,
+				y: 40
+			})
+			.text('LIFE EXPECTANCY AT BIRTH');
+
         chartInner = chart.append('g')
         	.attr({
-                transform: 'translate(' + margin.left + ',' + margin.top + ')'
+                transform: 'translate(' + margin.left + ',' + 70 + ')'
             });
 
         chartInner.append('g')
