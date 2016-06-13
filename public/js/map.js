@@ -311,7 +311,36 @@
 			.attr({
 				x: -12,
 				dy: -4
+			});
+
+		renderArea();
+	}
+
+	function renderArea() {
+		var chartItem = chartInner.append('g')
+			.attr({
+				class: 'country-area'
+			});
+
+		chartLine = d3.svg.line()
+			.defined(function(d) {
+				return d[1];
 			})
+			.x(function(d) {
+				return convert.x(d[0]);
+			})
+			.y(function(d) {
+				return convert.y(d[1]);
+			});
+
+		chartArea = d3.svg.area()
+			.defined(chartLine.defined())
+			.x(chartLine.x())
+			.y0(chartHeight)
+			.y1(chartLine.y());
+
+		chartAreaPath = chartItem.append('path').attr('class', 'area');
+		chartLinePath = chartItem.append('path').attr('class', 'line');
 	}
 
 	function renderHoverData() {
@@ -341,76 +370,52 @@
 		var dataset =  country.properties,
 			data = dictToList(dataset);
 
-		var chartItem = chartInner.append('g')
-			.attr({
-				class: 'country-area ' + country.id
-			});
-
-		chartLine = d3.svg.line()
-			.defined(function(d) {
-				return d[1];
-			})
-			.x(function(d) {
-				return convert.x(d[0]);
-			})
-			.y(function(d) {
-				return convert.y(d[1]);
-			});
-
-		chartArea = d3.svg.area()
-			.defined(chartLine.defined())
-			.x(chartLine.x())
-			.y0(chartHeight)
-			.y1(chartLine.y());
-
-		chartAreaPath = chartItem.append('path').attr('class', 'area');
-		chartLinePath = chartItem.append('path').attr('class', 'line');
-
 		chartAreaPath
 			.datum(data.filter(function(d) {
 				if (d[1]) return d;
 			}))
+			.transition().duration(1500)
 			.attr('d', chartArea);
-
 
 		chartLinePath
 			.datum(data.filter(function(d) {
 				if (d[1]) return d;
 			}))
+			.transition().duration(1500)
 			.attr('d', chartLine);
 
-		var dots = chartItem.append('g')
-			.attr('class', 'dots');
-
-		dots.selectAll('.dot')
-			.data(data.filter(function(d) {if (d[1]) return d; }))
-			.enter().append('circle')
-			.attr({
-                class: 'dot',
-                cx: chartLine.x(),
-                cy: chartLine.y(),
-                r: 3
-            })
-			.on('mouseover', function(d) {
-				var xy = d3.mouse(this),
-					x,
-					y,
-					deltaX = 790,
-					deltaY = 15;
-
-				x = xy[0] - chartWidth + deltaX;
-				y = xy[1] - deltaY;
-
-				hover.attr('transform', 'translate(' + x + ',' + y + ')');
-
-				hover.select('.country-name').text('Country: ' + country.country);
-				hover.select('.year').text('Year: ' + d[0]);
-				hover.select('.data').text('Average years: ' + d[1].toFixed(2));
-
-			})
-			.on('mouseout', function() {
-				hover.attr('transform', 'translate(' + (-1000) + ',' + (-1000) + ')');
-			});
+		//var dots = chartItem.append('g')
+		//	.attr('class', 'dots');
+        //
+		//dots.selectAll('.dot')
+		//	.data(data.filter(function(d) {if (d[1]) return d; }))
+		//	.enter().append('circle')
+		//	.attr({
+         //       class: 'dot',
+         //       cx: chartLine.x(),
+         //       cy: chartLine.y(),
+         //       r: 3
+         //   })
+		//	.on('mouseover', function(d) {
+		//		var xy = d3.mouse(this),
+		//			x,
+		//			y,
+		//			deltaX = 790,
+		//			deltaY = 15;
+        //
+		//		x = xy[0] - chartWidth + deltaX;
+		//		y = xy[1] - deltaY;
+        //
+		//		hover.attr('transform', 'translate(' + x + ',' + y + ')');
+        //
+		//		hover.select('.country-name').text('Country: ' + country.country);
+		//		hover.select('.year').text('Year: ' + d[0]);
+		//		hover.select('.data').text('Average years: ' + d[1].toFixed(2));
+        //
+		//	})
+		//	.on('mouseout', function() {
+		//		hover.attr('transform', 'translate(' + (-1000) + ',' + (-1000) + ')');
+		//	});
 	}
 
 	function clearMap(timeout) {
@@ -419,7 +424,7 @@
 			.classed('country_selected', false);
 
 		setTimeout(function() {
-			d3.selectAll('.country-area').remove();
+			d3.selectAll('.country-area rect').remove();
 		}, timeout);
 
 		d3.selectAll('.country-area rect')
