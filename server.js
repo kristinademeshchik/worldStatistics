@@ -21,7 +21,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.get('/', function (req, res) {
-    res.render('index', {});
+    res.render('index', {
+        requestData: requestData,
+        reverse: reverse
+    });
 });
 
 app.get('/statistic', function (req, res) {
