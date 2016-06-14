@@ -6,8 +6,8 @@ var express = require('express'),
     app = express();
 
 
-var requestData = 'freedom',
-    reverse = true;
+var requestData = 'age',
+    reverse = false;
 
 app.use(express.static('public'));
 
