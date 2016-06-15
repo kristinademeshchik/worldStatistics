@@ -231,7 +231,7 @@
 				d3.selectAll('.' + d.id).remove();
 			}, 1500);
 
-			d3.selectAll('.' + d.id)
+			d3.selectAll('.' + d.id + ' rect')
 				.transition()
 				.duration(1500)
 				.attr({
