@@ -11,17 +11,25 @@
     <script src="http://d3js.org/topojson.v1.min.js"></script>
     <script src="http://d3js.org/d3.geo.projection.v0.min.js"></script>
 
+     <link rel="stylesheet" href="node_modules/mocha/mocha.css">
+
 </head>
 <body class="map-page">
+
+    <div id="mocha"></div>
+    <script src="/node_modules/mocha/mocha.js"></script>
+    <script src="/node_modules/chai/chai.js"></script>
+    <script>mocha.setup('bdd')</script>
 
     <div id="map"></div>
 
     <script>
         var requestData = '{{requestData}}',
                 reverse = {{reverse}};
-
     </script>
+
     <script src="/js/map.js"></script>
+    <script src="/tests/map-test.js"></script>
 
 </body>
 </html>

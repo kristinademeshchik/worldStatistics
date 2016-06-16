@@ -36,7 +36,9 @@
     "gulp-run-sequence": "^0.3.2",
     "ogr2ogr": "^0.5.1",
     "topojson": "^1.6.26",
-    "express-csv": "^0.6.0"
+    "express-csv": "^0.6.0",
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3"
   },
   "scripts": {
     "start": "node app.js"
