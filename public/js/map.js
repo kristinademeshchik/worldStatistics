@@ -1,4 +1,4 @@
-// (function() {
+ (function() {
 	console.log('app started');
 
 	var map = d3.select('#map'),
@@ -526,4 +526,4 @@
 
 	init();
 
-// })();
+ })();
