@@ -12,7 +12,8 @@
     "gulp-concat": "^2.6.0",
     "gulp-handlebars": "^4.0.0",
     "handlebars": "^4.0.5",
-    "gulp-stylus": "^2.4.0"
+    "gulp-stylus": "^2.4.0",
+    "express-csv": "^0.6.0"
   },
   "scripts": {
     "start": "node app.js"
