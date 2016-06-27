@@ -321,40 +321,38 @@
   }
 
   function dragChart() {
+
+    var drag = function() {
+      var self = this,
+        xy = d3.mouse(self),
+        x,
+        y;
+
+      moveAt();
+
+      function moveAt() {
+        xy = d3.mouse(self);
+        x = xy[0] - chartWidth / 2;
+        y = xy[1] - chartHeight / 2;
+
+        chart.attr({
+          transform: 'translate(' + x + ', ' + y + ')'
+        });
+      }
+
+      chart
+        .on('mousemove', moveAt)
+        .on('mouseup', function () {
+          chart.on('mousemove', null);
+          chart.on('mouseup', null);
+        });
+    };
+
     chart
       .on('dragstart', function () {
         return false;
       })
-      .on('mousedown', function () {
-        var self = this,
-          xy = d3.mouse(self),
-          x,
-          y;
-
-        moveAt();
-
-        function moveAt() {
-          xy = d3.mouse(self);
-          x = xy[0] - chartWidth / 2;
-          y = xy[1] - chartHeight / 2;
-
-          chart.attr({
-            transform: 'translate(' + x + ', ' + y + ')'
-          });
-        }
-
-        chart.on('mousemove', function () {
-          moveAt();
-        });
-      })
-      .on('mouseup', function () {
-        chart.on('mousemove', function(){
-          return false;
-        });
-        chart.on('mouseup', function() {
-          return false;
-        });
-      });
+      .on('mousedown', drag);
   }
 
   function renderHoverData() {
