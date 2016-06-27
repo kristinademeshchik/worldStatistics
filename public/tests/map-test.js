@@ -1,6 +1,6 @@
 var assert = chai.assert;
 
-console.log('tests started')
+console.log('tests started');
 
 describe('getRandom', function() {
 
