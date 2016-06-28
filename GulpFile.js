@@ -55,5 +55,5 @@ gulp.task('lint', function () {
 gulp.task('default', ['stylus']);
 
 gulp.task('watch', function () {
-  gulp.watch(['./public/stylus/components/*.styl', './public/stylus/core/*.styl'], ['stylus']);
+  gulp.watch(['./public/stylus/components/*.styl', './public/stylus/core/*.styl'], ['stylus', 'lint']);
 });

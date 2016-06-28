@@ -2,7 +2,7 @@
   console.log('app started');
 
   var map = d3.select('#map'),
-    width = 1020,
+    width = 1220,
     height = 800,
     years = [],
     defaultColor = '#ffffff',
@@ -121,9 +121,6 @@
 
     mapObgect.attr('transform', 'translate(0, 80)');
 
-    select = svg.append('g')
-      .attr('class', 'selected');
-
     mapObgect.selectAll('.country')
       .data(world.features)
       .enter().append('path')
@@ -151,7 +148,7 @@
   }
 
   function addSwitcherChartType() {
-    var areaSwitcher = svg.append('g')
+    var areaSwitcher = chart.append('g')
       .attr({
         class: 'area-switch'
       })
@@ -166,7 +163,7 @@
         clearMap(1500);
       });
 
-    var rectSwitcher = svg.append('g')
+    var rectSwitcher = chart.append('g')
       .attr({
         class: 'rect-switch active',
         transform: 'translate(0, 50)'
@@ -246,6 +243,8 @@
   }
 
   function renderChart() {
+    var drag = dragChart();
+
     convert = {
       x: d3.scale.ordinal(),
       y: d3.scale.linear()
@@ -269,14 +268,20 @@
 
     chart = svg.append('g');
 
+    chart.call(drag);
+
     chart.attr({
       class: 'chart',
       transform: 'translate(120, 0)'
     });
 
-    chart.append('rect')
+    var chartContainer = chart.append('g')
       .attr({
+        transform: 'translate(120, 0)'
+      });
 
+    chartContainer.append('rect')
+      .attr({
         width: chartWidth + 70,
         height: chartHeight + 115,
         rx: 3,
@@ -284,7 +289,7 @@
         class: 'chart-inner'
       });
 
-    chart.append('text')
+    chartContainer.append('text')
       .attr({
         class: 'title',
         x: 30,
@@ -292,7 +297,7 @@
       })
       .text('LIFE EXPECTANCY AT BIRTH');
 
-    chartInner = chart.append('g')
+    chartInner = chartContainer.append('g')
       .attr({
         transform: 'translate(' + margin.left + ',' + 70 + ')'
       });
@@ -316,43 +321,21 @@
         x: -12,
         dy: -4
       });
-
-    dragChart();
   }
 
   function dragChart() {
 
-    var drag = function() {
-      var self = this,
-        xy = d3.mouse(self),
-        x,
-        y;
+    var drag = d3.behavior.drag()
+      .on("drag", dragmove);
 
-      moveAt();
+    function dragmove(d) {
+      var x = d3.event.x - chartWidth / 2,
+        y = d3.event.y - chartHeight / 2;
 
-      function moveAt() {
-        xy = d3.mouse(self);
-        x = xy[0] - chartWidth / 2;
-        y = xy[1] - chartHeight / 2;
+      d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
+    }
 
-        chart.attr({
-          transform: 'translate(' + x + ', ' + y + ')'
-        });
-      }
-
-      chart
-        .on('mousemove', moveAt)
-        .on('mouseup', function () {
-          chart.on('mousemove', null);
-          chart.on('mouseup', null);
-        });
-    };
-
-    chart
-      .on('dragstart', function () {
-        return false;
-      })
-      .on('mousedown', drag);
+    return drag;
   }
 
   function renderHoverData() {
@@ -458,6 +441,7 @@
   }
 
   function clearMap(timeout) {
+    console.log(timeout);
 
     d3.selectAll('.country_selected')
       .classed('country_selected', false);
@@ -466,7 +450,7 @@
       d3.selectAll('.country-area').remove();
     }, timeout);
 
-    d3.selectAll('.country-area')
+    d3.selectAll('.country-area rect')
       .transition()
       .duration(1500)
       .attr({
@@ -478,8 +462,6 @@
   function setRectChartData(country) {
     var dataset = country.properties,
       data = dictToList(dataset);
-
-    console.log(data);
 
     var chartItem = chartInner.append('g')
       .attr({
@@ -494,7 +476,6 @@
       .append('g')
       .attr({
         transform: function (d, i) {
-          console.log(convert.x(d[0]));
           if (d[1]) return 'translate(' + convert.x(d[0]) + ', 0)';
         },
         class: 'rect-group'
@@ -543,7 +524,7 @@
       itemWidth = 20,
       i = 0;
 
-    legend.attr('transform', 'translate(10, 670)');
+    legend.attr('transform', 'translate(10, 700)');
 
     while (i < colors.length) {
       legend.append('rect')
