@@ -25,7 +25,6 @@
     colors,
     hover,
     text,
-    select,
     chartWidth = 700,
     chartHeight = 190,
     timeDomain = [],
@@ -266,14 +265,23 @@
     convert.x.domain(years);
     convert.y.domain(dataDomain);
 
-    chart = svg.append('g');
-
-    chart.call(drag);
+    chart = svg.append('g')
+      .attr({
+        class: 'draggable'
+      });
 
     chart.attr({
       class: 'chart',
       transform: 'translate(120, 0)'
     });
+
+    chart.call(drag)
+      .data([
+        {
+          x: 120,
+          y: 0
+        }
+      ]);
 
     var chartContainer = chart.append('g')
       .attr({
@@ -326,13 +334,24 @@
   function dragChart() {
 
     var drag = d3.behavior.drag()
+      .origin(function (d) {
+        return d;
+      })
+      .on("dragstart", dragStarted)
       .on("drag", dragmove);
 
-    function dragmove(d) {
-      var x = d3.event.x - chartWidth / 2,
-        y = d3.event.y - chartHeight / 2;
+    function dragStarted(d) {
+      d3.event.sourceEvent.stopPropagation();
+    }
 
-      d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
+    function dragmove(d) {
+      d.x = d3.event.x;
+      d.y = d3.event.y;
+
+      d3.select(this)
+        .attr({
+          transform: "translate(" + d.x + "," + d.y + ")"
+        });
     }
 
     return drag;
@@ -441,8 +460,6 @@
   }
 
   function clearMap(timeout) {
-    console.log(timeout);
-
     d3.selectAll('.country_selected')
       .classed('country_selected', false);
 
